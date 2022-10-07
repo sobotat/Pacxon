@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>vsb-cs-java1</groupId>
-	<artifactId>lab01</artifactId>
-	<version>0.0.1-SNAPHOST</version>
+	<artifactId>pacxon</artifactId>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
