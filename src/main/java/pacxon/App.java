@@ -28,7 +28,7 @@ public class App extends Application {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.resizableProperty().set(false);
-			primaryStage.setTitle("Pong");
+			primaryStage.setTitle("Pacxon");
 			primaryStage.show();
 			
 			//Exit program when main window is closed
