@@ -23,18 +23,4 @@ public abstract class Entity {
 
     abstract public void draw(GraphicsContext gc, int blockSize);
     abstract public void loadTextures();
-
-    public void addTexture(String fileLocation){
-        if(textures == null)
-            this.textures = new ArrayList<>();
-
-        Image img = new Image(
-                Objects.requireNonNull(this.getClass().getResourceAsStream("/pacxon/" + fileLocation)));
-
-        if (img.isError()) {
-            System.out.println("Img Load Failed");
-            System.out.println(img.exceptionProperty().get().getMessage());
-        }else
-            textures.add(img);
-    }
 }

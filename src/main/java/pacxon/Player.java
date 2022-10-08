@@ -24,15 +24,16 @@ public class Player extends Entity{
 
     @Override
     public void loadTextures() {
-        addTexture("characters/p/player_stop1.png");
-        addTexture("characters/p/player_stop2.png");
-        addTexture("characters/p/player_left1.png");
-        addTexture("characters/p/player_left2.png");
-        addTexture("characters/p/player_right1.png");
-        addTexture("characters/p/player_right2.png");
-        addTexture("characters/p/player_up1.png");
-        addTexture("characters/p/player_up2.png");
-        addTexture("characters/p/player_down1.png");
-        addTexture("characters/p/player_down2.png");
+        textures = new ArrayList<>();
+        Api.addTexture( textures, "characters/p/player_stop1.png");
+        Api.addTexture( textures, "characters/p/player_stop2.png");
+        Api.addTexture( textures, "characters/p/player_left1.png");
+        Api.addTexture( textures, "characters/p/player_left2.png");
+        Api.addTexture( textures, "characters/p/player_right1.png");
+        Api.addTexture( textures, "characters/p/player_right2.png");
+        Api.addTexture( textures, "characters/p/player_up1.png");
+        Api.addTexture( textures, "characters/p/player_up2.png");
+        Api.addTexture( textures, "characters/p/player_down1.png");
+        Api.addTexture( textures, "characters/p/player_down2.png");
     }
 }

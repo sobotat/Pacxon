@@ -27,13 +27,14 @@ public class NPC extends Entity{
 
     @Override
     public void loadTextures() {
-        addTexture("characters/" + type + "/npc_left1.png");
-        addTexture("characters/" + type + "/npc_left2.png");
-        addTexture("characters/" + type + "/npc_right1.png");
-        addTexture("characters/" + type + "/npc_right2.png");
-        addTexture("characters/" + type + "/npc_up1.png");
-        addTexture("characters/" + type + "/npc_up2.png");
-        addTexture("characters/" + type + "/npc_down1.png");
-        addTexture("characters/" + type + "/npc_down2.png");
+        textures = new ArrayList<>();
+        Api.addTexture( textures,"characters/" + type + "/npc_left1.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_left2.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_right1.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_right2.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_up1.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_up2.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_down1.png");
+        Api.addTexture( textures,"characters/" + type + "/npc_down2.png");
     }
 }

@@ -1,20 +1,20 @@
 {
-  "mapX": 15,
-  "mapY": 9,
+  "mapX": 45,
+  "mapY": 29,
   "Player": {
-    "positionX": 1,
+    "positionX": 0,
     "positionY": 1
   },
   "NPCs": [
     {
       "positionX": 4,
       "positionY": 7,
-      "type": "r"
+      "type": "c"
     },
     {
       "positionX": 7,
       "positionY": 3,
-      "type": "r"
+      "type": "m"
     },
     {
       "positionX": 13,

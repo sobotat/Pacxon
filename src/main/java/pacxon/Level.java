@@ -25,14 +25,16 @@ public class Level {
     }
 
     public void draw(GraphicsContext gc, int blockSize){
+
         for (int y = 0; y < map.size(); y++) {
             ArrayList<Character> row = map.get(y);
             for (int x = 0; x < row.size(); x++) {
                 char item = row.get(x);
 
                 if (item == '#'){
-                    gc.setFill(Color.BLACK);
-                    gc.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+                    //gc.setFill(Color.BLACK);
+                    //gc.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+                    Wall.draw(gc, new Point2D(x,y), blockSize, 5);
                 }
             }
         }
