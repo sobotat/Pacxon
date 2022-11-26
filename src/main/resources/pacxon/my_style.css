@@ -1,0 +1,99 @@
+.root{
+    colorDarkGray: #21252b;
+    colorLightGray: #282c34;
+    colorAccent: #4cbae3;
+}
+
+.button{
+    -fx-background-color: colorLightGray;
+    -fx-text-fill : "white";
+    -fx-background-radius : 20;
+}
+
+.check-box .box{
+    -fx-background-color: white;
+}
+
+.text-field{
+    -fx-text-fill : "white";
+    -fx-background-color: colorDarkGray;
+    -fx-background-radius : 20;
+}
+
+.progress-bar > .track {
+  -fx-text-box-border: colorLightGray;
+  -fx-control-inner-background: colorLightGray;
+}
+
+.progress-bar .bar {
+    -fx-padding: 1px;
+    -fx-background-insets: 0;
+    -fx-background-color: colorAccent;
+}
+
+.slider {
+}
+
+.scroll-pane {
+    -fx-background-color: colorDarkGray;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: colorDarkGray;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color: transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: colorAccent;
+    -fx-background-radius: 5em;
+}
+
+#box_Black {
+    -fx-background-color: colorDarkGray;
+}
+
+#box_Gray {
+    -fx-background-color: colorLightGray;
+}
+
+#btn_Black {
+    -fx-background-color: colorDarkGray;
+    -fx-background-radius: 20;
+}
+
+#btn_Black:hover {
+    -fx-background-color: colorLightGray;
+    -fx-background-radius: 20;
+    -fx-border-color: colorDarkGray;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 3, 0, 0, 0);
+}
+
+#btn_Gray {
+    -fx-background-color: colorLightGray;
+    -fx-background-radius: 20;
+}
+
+#btn_Gray:hover {
+    -fx-background-color: colorDarkGray;
+    -fx-background-radius: 20;
+    -fx-border-color: colorLightGray;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 3, 0, 0, 0);
+}

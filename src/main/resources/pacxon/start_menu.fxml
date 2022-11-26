@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<VBox id="box_Black" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pacxon.controllers.StartMenuController">
+   <children>
+      <VBox id="box_Gray" alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="396.0" prefWidth="355.0" style="-fx-background-radius: 20;">
+         <children>
+            <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Pacxon" textAlignment="CENTER">
+               <font>
+                  <Font name="Agency FB Bold" size="61.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Text>
+            <VBox alignment="CENTER" prefHeight="485.0" prefWidth="355.0">
+               <children>
+                  <HBox id="btn_Black" alignment="CENTER" maxWidth="-Infinity" onMouseClicked="#onSelectLevelClicked" prefHeight="42.0" prefWidth="293.0">
+                     <children>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icon_chevronRight_white.png.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="-25.0" right="5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Level" textAlignment="CENTER">
+                           <font>
+                              <Font name="Agency FB Bold" size="28.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox id="btn_Black" alignment="CENTER" maxWidth="-Infinity" onMouseClicked="#onExitClicked" prefHeight="42.0" prefWidth="293.0">
+                     <children>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@icon_chevronRight_white.png.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="-25.0" right="5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Exit" textAlignment="CENTER">
+                           <font>
+                              <Font name="Agency FB Bold" size="28.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

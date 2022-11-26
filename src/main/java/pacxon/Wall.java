@@ -8,6 +8,10 @@ import java.util.ArrayList;
 
 public class Wall {
 
+    public enum WallStyle {
+        STRAIGHT, CURVE, T_CROSS, CROSS, END, POINT, POINT_DARK, POINT_ROUTE;
+    }
+
     private static ArrayList<Image> textures;
 
     public static void draw(GraphicsContext gc, Point2D position, int blockSize, int style){
@@ -25,5 +29,7 @@ public class Wall {
         Api.addTexture( Wall.textures,"walls/wall_cross.png");
         Api.addTexture( Wall.textures,"walls/wall_end.png");
         Api.addTexture( Wall.textures,"walls/wall_point.png");
+        Api.addTexture( Wall.textures,"walls/wall_point_dark.png");
+        Api.addTexture( Wall.textures,"walls/wall_point_route.png");
     }
 }

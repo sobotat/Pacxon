@@ -1,13 +1,17 @@
 package pacxon;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import pacxon.controllers.GameViewController;
+import pacxon.controllers.StartMenuController;
+
+import java.util.Objects;
 
 public class App extends Application {
 
@@ -17,34 +21,60 @@ public class App extends Application {
 	
 	private Canvas canvas;
 	private static Stage stage;
-	private AnimationTimer timer;
+
+	public static App app;
+	public static StartMenuController startMenuController;
+	public static GameViewController gameViewController;
+	public static Stage primaryStage;
+	private static Scene startMenuScene, gameViewScene, winViewScene, scoreViewScene;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			//Construct a main window with a canvas.  
-			Group root = new Group();
-			canvas = new Canvas(900, 580);
-			root.getChildren().add(canvas);
-			Scene scene = new Scene(root, 900, 580);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
+			App.primaryStage = primaryStage;
+			App.app = this;
+
+			// CSS
+			String css = Objects.requireNonNull(this.getClass().getResource("my_style.css")).toExternalForm();
+
+			// StartMenu
+			FXMLLoader loaderStartMenu = new FXMLLoader(getClass().getResource("start_menu.fxml"));
+			VBox rootStartMenu = loaderStartMenu.load();
+			startMenuScene = new Scene(rootStartMenu);
+			startMenuScene.getStylesheets().add(css);
+			startMenuController = loaderStartMenu.getController();
+
+			// StartMenu
+			FXMLLoader loaderGameView = new FXMLLoader(getClass().getResource("game_view.fxml"));
+			VBox rootGameView = loaderGameView.load();
+			gameViewScene = new Scene(rootGameView);
+			gameViewScene.getStylesheets().add(css);
+			gameViewController = loaderGameView.getController();
+			gameViewController.setUpGame(gameViewScene);
+
+			primaryStage.setScene(startMenuScene);
 			primaryStage.resizableProperty().set(true);
 			primaryStage.setTitle("Pacxon");
 			primaryStage.show();
-			//Exit program when main window is closed
-			primaryStage.setOnCloseRequest(this::exitProgram);
-			timer = new DrawingThread(canvas);
-			timer.start();
 
+			primaryStage.setOnCloseRequest(this::exitProgram);
 			stage = primaryStage;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public static void switchToGame(){
+		System.out.println("Switching to GameView");
+		if(primaryStage == null || gameViewScene == null)
+			return;
+
+		primaryStage.setScene(gameViewScene);
+		gameViewController.startGame();
+	}
+
 	@Override
 	public void stop() throws Exception {
-		timer.stop();
 		super.stop();
 	}
 
@@ -52,8 +82,9 @@ public class App extends Application {
 		stage.setWidth(size.getX());
 		stage.setHeight(size.getY());
 	}
-	
-	private void exitProgram(WindowEvent evt) {
+
+	public void exitProgram(WindowEvent evt) {
+		gameViewController.stopGame();
 		System.exit(0);
 	}
 }

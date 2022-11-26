@@ -1,0 +1,35 @@
+{
+  "mapX": 25,
+  "mapY": 20,
+  "Player": {
+    "positionX": 0,
+    "positionY": 0
+  },
+  "NPCs": [
+    {
+      "positionX": 7,
+      "positionY": 2,
+      "direction": "DOWN_LEFT",
+      "spawnDelay": 10,
+      "type": "c"
+    },
+    {
+      "positionX": 10,
+      "positionY": 10,
+      "direction": "UP_LEFT",
+      "type": "m"
+    },
+    {
+      "positionX": 5,
+      "positionY": 5,
+      "direction": "DOWN_LEFT",
+      "type": "r"
+    },
+    {
+      "positionX": 15,
+      "positionY": 15,
+      "direction": "DOWN_RIGHT",
+      "type": "y"
+    }
+  ]
+}

@@ -6,4 +6,10 @@ module lab01 {
     requires com.google.gson;
     opens pacxon to javafx.fxml;
     exports pacxon;
+    exports pacxon.entities;
+    opens pacxon.entities to javafx.fxml;
+    exports pacxon.controllers;
+    opens pacxon.controllers to javafx.fxml;
+    exports pacxon.listeners;
+    opens pacxon.listeners to javafx.fxml;
 }

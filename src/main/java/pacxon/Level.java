@@ -1,46 +1,152 @@
 package pacxon;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import pacxon.entities.Entity;
+import pacxon.entities.NPC;
+import pacxon.entities.NPC_Cyan;
+import pacxon.entities.Player;
+import pacxon.listeners.InputListener;
+import pacxon.listeners.LevelChangeListener;
 
-import java.io.*;
 import java.util.ArrayList;
 
 public class Level {
-    ArrayList<ArrayList<Character>> map;
+    ArrayList<ArrayList<LevelPoint>> map;
     Point2D mapSize;
     ArrayList<Entity> entities;
+    Game game;
 
-    public Level(String levelFileName){
+    private final LevelChangeListener levelChangeListener;
+
+    public enum LevelPoint{
+        Wall, Wall_Route, Wall_Temp, Empty
+    }
+
+    public Level(String levelFileName, Game game){
+        this.game = game;
         loadLevel(levelFileName);
         //loadEntitiesFromMap();
         generateMap( (int)mapSize.getX(), (int)mapSize.getY());
+        App.gameViewController.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+
+        levelChangeListener = new LevelChangeListener(){
+            @Override
+            public void changeToWall(Point2D position) {
+                map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Wall);
+                updateCurrentLevelFillPercent();
+            }
+
+            @Override
+            public void changeToRoute(Point2D position) {
+                map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Wall_Route);
+            }
+
+            @Override
+            public void changeToEmpty(Point2D position) {
+                map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Empty);
+            }
+
+            @Override
+            public void startFill() {
+                for (Entity entity : entities) {
+                    if(entity instanceof NPC npc){
+                        if(!(npc instanceof NPC_Cyan))
+                            fillMap(npc.getPositionRounded());
+                    }
+                }
+                finishFill();
+                App.gameViewController.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+            }
+        };
     }
 
-    public void draw(GraphicsContext gc, int blockSize){
+    public void update(double deltaTime){
+
+        Player player = null;
+        for (Entity entity : entities) {
+            entity.update(deltaTime);
+
+            if(entity instanceof Player p)
+                player = p;
+        }
+
+        if(player == null)
+            return;
+
+        for(Entity entity : entities){
+            if(player.equals(entity))
+                continue;
+
+            if(entity instanceof NPC_Cyan npc_cyan){
+                if(!npc_cyan.isSpawned())
+                    continue;
+
+                if(player.getPositionRounded().getX() == npc_cyan.getPositionRounded().getX() &&
+                   player.getPositionRounded().getX() == npc_cyan.getPositionRounded().getX() ){
+                    System.out.println("Player was Hit by Cyan");
+                    player.hit();
+                    game.removeLife();
+                }
+                continue;
+            }
+
+            for (Point2D point : player.route){
+                if(point.getX() == entity.getNextPosition().getX() &&
+                   point.getY() == entity.getNextPosition().getY() ){
+
+                    System.out.println("Player was Hit");
+                    player.hit();
+                    game.removeLife();
+
+                    return;
+                }
+            }
+        }
+    }
+
+    public void draw(GraphicsContext gc, int blockSize, boolean debug){
 
         for (int y = 0; y < map.size(); y++) {
-            ArrayList<Character> row = map.get(y);
+            ArrayList<LevelPoint> row = map.get(y);
             for (int x = 0; x < row.size(); x++) {
-                char item = row.get(x);
+                LevelPoint item = row.get(x);
 
-                if (item == '#'){
-                    //gc.setFill(Color.BLACK);
-                    //gc.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-                    Wall.draw(gc, new Point2D(x,y), blockSize, 5);
+                if (item == LevelPoint.Wall) {
+                    Wall.draw(gc, new Point2D(x, y), blockSize, Wall.WallStyle.POINT.ordinal());
+                }else if (item == LevelPoint.Wall_Route){
+                    Wall.draw(gc, new Point2D(x, y), blockSize, Wall.WallStyle.POINT_ROUTE.ordinal());
+                }else if (item == LevelPoint.Empty){
+                    Wall.draw(gc, new Point2D(x,y), blockSize, Wall.WallStyle.POINT_DARK.ordinal());
                 }
             }
         }
 
         for (Entity entity: entities) {
-            entity.draw(gc, blockSize);
+            entity.draw(gc, blockSize, debug);
+        }
+    }
+
+    public InputListener getPlayerInputListener(){
+        for (Entity entity : entities) {
+            if(entity instanceof Player player){
+                return player.inputListener;
+            }
+        }
+        return null;
+    }
+
+    public LevelChangeListener getLevelChangeListener(){
+        return levelChangeListener;
+    }
+
+    public LevelPoint tryGetPointOnMap( int x, int y, LevelPoint elseReturn){
+        try{
+            return map.get(y).get(x);
+        }catch (IndexOutOfBoundsException e){
+            return elseReturn;
         }
     }
 
@@ -48,16 +154,16 @@ public class Level {
         map = new ArrayList<>(y);
 
         for (int i = 0; i < y; i++) {
-            ArrayList<Character> line = new ArrayList<>(y);
+            ArrayList<LevelPoint> line = new ArrayList<>(y);
 
             for (int j = 0; j < x; j++) {
                 if(i == 0 || i == y - 1){
-                    line.add('#');
+                    line.add(LevelPoint.Wall);
                 }else{
                     if ((j == 0 || j == x - 1)) {
-                        line.add('#');
+                        line.add(LevelPoint.Wall);
                     } else {
-                        line.add(' ');
+                        line.add(LevelPoint.Empty);
                     }
                 }
             }
@@ -82,17 +188,23 @@ public class Level {
             int playerPositionX = playerObj.getInt("positionX");
             int playerPositionY = playerObj.getInt("positionY");
             Point2D playerPosition = new Point2D( playerPositionX, playerPositionY);
-            entities.add(new Player(playerPosition));
+            entities.add(new Player( this, playerPosition, new Point2D(0, 0)));
             System.out.println("Player Loaded on [" + playerPosition.getX() + "," + playerPosition.getY() + "]");
 
             JSONArray npcArrayObj = levelObj.getJSONArray("NPCs");
             for (int n = 0; n < npcArrayObj.length(); n++) {
                 JSONObject npcObj = npcArrayObj.getJSONObject(n);
+                String type = npcObj.getString("type");
 
                 Point2D npcPosition = new Point2D(npcObj.getInt("positionX"),
-                                                  npcObj.getInt("positionY"));
-                String type = npcObj.getString("type");
-                entities.add(new NPC(npcPosition, type));
+                        npcObj.getInt("positionY"));
+                Entity.Direction npcDirection = Entity.Direction.valueOf(npcObj.getString("direction"));
+
+                if(type.equals("c")) {
+                    int spawnDelay = npcObj.getInt("spawnDelay");
+                    entities.add(new NPC_Cyan(this, npcPosition, npcDirection, spawnDelay));
+                }else
+                    entities.add(new NPC( this, npcPosition, npcDirection, type));
                 System.out.println("NPC Loaded on [" + npcPosition.getX() + "," + npcPosition.getY() + "]");
             }
 
@@ -101,30 +213,62 @@ public class Level {
         }
     }
 
-    public static void generateLevelTemplate(){
-        JSONObject levelObj = new JSONObject();
-        levelObj.put("mapX", 10);
-        levelObj.put("mapY", 5);
+    public void updateCurrentLevelFillPercent(){
+        int percentFilledOfMap = (int)percentFilledOfMap();
+        App.gameViewController.getHudListener().mapFillPercentageChanged(percentFilledOfMap);
 
-        JSONObject playerObj = new JSONObject();
-        playerObj.put("positionX", 1);
-        playerObj.put("positionY", 1);
-        levelObj.put("Player", playerObj);
+        if(percentFilledOfMap >= 80)
+            game.gameChangeListener.levelWon();
+    }
 
-        JSONArray npcArrayObj = new JSONArray();
-        for (int i = 0; i < 3; i++) {
-            JSONObject npc = new JSONObject();
-            npc.put("positionX", 1);
-            npc.put("positionY", 1);
-            npc.put("type", "r");
-            npcArrayObj.put(npc);
+    private void fillMap( Point2D position){
+        LevelPoint levelPoint = tryGetPointOnMap((int)position.getX(), (int)position.getY(), LevelPoint.Wall);
+
+        if(levelPoint != LevelPoint.Empty)
+            return;
+
+        map.get((int)position.getY()).set((int)position.getX(), LevelPoint.Wall_Temp);
+
+        fillMap(new Point2D(position.getX(), position.getY() - 1));
+        fillMap(new Point2D(position.getX(), position.getY() + 1));
+        fillMap(new Point2D(position.getX() - 1, position.getY()));
+        fillMap(new Point2D(position.getX() + 1, position.getY()));
+    }
+
+    private void finishFill(){
+        for (ArrayList<LevelPoint> row: map) {
+            for(int x = 0; x < row.size(); x++){
+                LevelPoint levelPoint = row.get(x);
+
+                if(levelPoint == LevelPoint.Empty) {
+                    row.set(x, LevelPoint.Wall);
+                }else if(levelPoint == LevelPoint.Wall_Temp){
+                    row.set(x, LevelPoint.Empty);
+                }else if(levelPoint == LevelPoint.Wall_Route){
+                    row.set(x, LevelPoint.Wall);
+                }
+            }
         }
-        levelObj.put("NPCs", npcArrayObj);
+        updateCurrentLevelFillPercent();
+    }
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement je = JsonParser.parseString( levelObj.toString());
-        String enhanceJson = gson.toJson(je);
+    public float percentFilledOfMap(){
+        return ((float)countWalls() / (float)((mapSize.getX() - 2) * (mapSize.getY() - 2)) * 100);
+    }
 
-        Files.writeString("\\levels\\template.txt", enhanceJson);
+    private int countWalls(){
+        int sum = 0;
+        for (int y = 1; y < map.size() - 1; y++) {
+            for (int x = 1; x < map.get(y).size() - 1; x++) {
+                LevelPoint levelPoint = map.get(y).get(x);
+                if(levelPoint == LevelPoint.Wall)
+                    sum++;
+            }
+        }
+        return sum;
+    }
+
+    public Point2D getMapSize(){
+        return mapSize;
     }
 }

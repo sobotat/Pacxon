@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox id="box_Black" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pacxon.controllers.GameViewController">
+   <children>
+      <HBox id="box_Gray" alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="600.0">
+         <children>
+            <BorderPane prefHeight="41.0" prefWidth="964.0">
+               <left>
+                  <Text fx:id="tv_MapFill" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="10%" wrappingWidth="65.0" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Agency FB Bold" size="27.0" />
+                     </font>
+                     <BorderPane.margin>
+                        <Insets left="10.0" />
+                     </BorderPane.margin>
+                  </Text>
+               </left>
+               <right>
+                  <HBox fx:id="hbox_Life" alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="65.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@life1.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="-5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@life1.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="-5.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@life1.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets right="10.0" />
+                     </BorderPane.margin>
+                  </HBox>
+               </right>
+               <center>
+                  <Text fx:id="tv_Level" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Level 1" textAlignment="CENTER" wrappingWidth="112.42244148254395" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Agency FB Bold" size="27.0" />
+                     </font>
+                  </Text>
+               </center>
+            </BorderPane>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <Canvas fx:id="canvas_Game" height="400.0" width="500.0">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </Canvas>
+   </children>
+</VBox>

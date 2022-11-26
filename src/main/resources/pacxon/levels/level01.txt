@@ -1,6 +1,6 @@
 {
-  "mapX": 45,
-  "mapY": 29,
+  "mapX": 25,
+  "mapY": 20,
   "Player": {
     "positionX": 0,
     "positionY": 1
@@ -9,16 +9,20 @@
     {
       "positionX": 4,
       "positionY": 7,
+      "direction": "UP_RIGHT",
+      "spawnDelay": 10,
       "type": "c"
     },
     {
       "positionX": 7,
       "positionY": 3,
+      "direction": "UP",
       "type": "m"
     },
     {
       "positionX": 13,
       "positionY": 5,
+      "direction": "UP_LEFT",
       "type": "r"
     }
   ]
