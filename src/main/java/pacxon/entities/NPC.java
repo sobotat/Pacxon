@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import pacxon.Api;
+import pacxon.Collisionable;
 import pacxon.Level;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class NPC extends Entity{
         }
 
         if(!lastChangePosition.equals(positionRounded)) {
-            if (Math.abs(position.getX() - positionRounded.getX()) < 0.05 &&
-                    Math.abs(position.getY() - positionRounded.getY()) < 0.05) {
+            if ((Math.abs(position.getX() - positionRounded.getX()) < 0.35 &&
+                 Math.abs(position.getY() - positionRounded.getY()) < 0.35 ) ){
 
                 nextPosition = positionRounded.add(direction);
                 nextPosition = new Point2D(Math.round(nextPosition.getX()), Math.round(nextPosition.getY()));
@@ -55,10 +56,34 @@ public class NPC extends Entity{
                     Level.LevelPoint right = level.tryGetPointOnMap((int)positionRounded.getX() + 1, (int)positionRounded.getY(), hitTarget);
 
                     switch (currentDirection){
-                        case UP_LEFT -> currentDirection =(left != hitTarget ? Direction.DOWN_LEFT : Direction.UP_RIGHT);
-                        case UP_RIGHT -> currentDirection = (right != hitTarget ? Direction.DOWN_RIGHT : Direction.UP_LEFT);
-                        case DOWN_LEFT -> currentDirection = (left != hitTarget ? Direction.UP_LEFT : Direction.DOWN_RIGHT);
-                        case DOWN_RIGHT -> currentDirection = (right != hitTarget ? Direction.UP_RIGHT : Direction.DOWN_LEFT);
+                        case UP_LEFT -> {
+                            if(left == hitTarget && top == hitTarget) {
+                                currentDirection = Direction.DOWN_RIGHT;
+                                break;
+                            }
+                            currentDirection = (left != hitTarget ? Direction.DOWN_LEFT : Direction.UP_RIGHT);
+                        }
+                        case UP_RIGHT -> {
+                            if(right == hitTarget && top == hitTarget) {
+                                currentDirection = Direction.DOWN_LEFT;
+                                break;
+                            }
+                            currentDirection = (right != hitTarget ? Direction.DOWN_RIGHT : Direction.UP_LEFT);
+                        }
+                        case DOWN_LEFT -> {
+                            if(left == hitTarget && bottom == hitTarget) {
+                                currentDirection = Direction.UP_RIGHT;
+                                break;
+                            }
+                            currentDirection = (left != hitTarget ? Direction.UP_LEFT : Direction.DOWN_RIGHT);
+                        }
+                        case DOWN_RIGHT -> {
+                            if(right == hitTarget && bottom == hitTarget) {
+                                currentDirection = Direction.UP_LEFT;
+                                break;
+                            }
+                            currentDirection = (right != hitTarget ? Direction.UP_RIGHT : Direction.DOWN_LEFT);
+                        }
                         case UP -> currentDirection = Direction.DOWN;
                         case DOWN -> currentDirection = Direction.UP;
                         case LEFT -> currentDirection = Direction.RIGHT;
@@ -72,14 +97,13 @@ public class NPC extends Entity{
     }
 
     @Override
-    public void draw(GraphicsContext gc, int blockSize, boolean debug){
-        //gc.setFill(Color.AQUA);
-        //gc.fillRect(position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
-        gc.drawImage(textures.get(0), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
+    public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug){
+        int animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
+        gc.drawImage(textures.get(animationId + currentAnimation), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
 
         if (debug) {
             drawDebug(gc, blockSize, 4, Color.DARKRED);
-            drawNextPointDebug(gc, blockSize, 4, direction);
+            drawNextPointDebug(gc, blockSize, 4, Color.MEDIUMSEAGREEN, direction);
         }
     }
 
@@ -94,5 +118,10 @@ public class NPC extends Entity{
         Api.addTexture( textures,"characters/" + type + "/npc_up2.png");
         Api.addTexture( textures,"characters/" + type + "/npc_down1.png");
         Api.addTexture( textures,"characters/" + type + "/npc_down2.png");
+    }
+
+    @Override
+    public void hitBy(Collisionable obj) {
+
     }
 }

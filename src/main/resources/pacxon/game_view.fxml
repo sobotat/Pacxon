@@ -30,7 +30,7 @@
                      <children>
                         <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
                            <image>
-                              <Image url="@life1.png" />
+                              <Image url="@objects/life1.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="-5.0" />
@@ -38,7 +38,7 @@
                         </ImageView>
                         <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
                            <image>
-                              <Image url="@life1.png" />
+                              <Image url="@objects/life1.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="-5.0" />
@@ -46,7 +46,7 @@
                         </ImageView>
                         <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
                            <image>
-                              <Image url="@life1.png" />
+                              <Image url="@objects/life1.png" />
                            </image>
                         </ImageView>
                      </children>

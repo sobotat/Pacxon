@@ -17,6 +17,7 @@
       "positionX": 10,
       "positionY": 10,
       "direction": "UP_LEFT",
+      "bonusSpeed": 2,
       "type": "m"
     },
     {

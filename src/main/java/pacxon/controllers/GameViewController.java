@@ -25,7 +25,7 @@ public class GameViewController {
     @FXML
     Text tv_MapFill, tv_Level;
 
-    private LinkedList<Node> removedLives = new LinkedList<>();
+    private final LinkedList<Node> removedLives = new LinkedList<>();
 
     public void setUpGame(Scene scene){
         hudListener = new HUDListener() {
@@ -66,7 +66,7 @@ public class GameViewController {
     }
 
     public void stopGame(){
-        timer.stop();
+        game.stopGame();
     }
 
     public HUDListener getHudListener() {

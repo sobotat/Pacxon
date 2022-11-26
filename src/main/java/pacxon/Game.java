@@ -20,7 +20,6 @@ public class Game {
     int blockSize = 20;
 
     public Game(int numberOfMaps, boolean debug){
-        gameRunning = true;
         this.debug = debug;
         //Level.generateLevelTemplate();
 
@@ -35,13 +34,13 @@ public class Game {
 
             @Override
             public void gameOver() {
-                System.out.println("Game Over");
+                System.out.println("\033[1;31mGame Over\033[0m");
                 gameRunning = false;
             }
 
             @Override
             public void restartGame() {
-                System.out.println("Restarting Game");
+                System.out.println("\n\n\n\033[1;38mRestarting Game\033[0m");
                 gameRunning = false;
                 currentLevel = 0;
                 setUpGame(numberOfMaps);
@@ -54,7 +53,7 @@ public class Game {
 
         Wall.loadTextures();
         for (int i = 1; i <= numberOfMaps; i++) {
-            String fileName = String.format("level0%d.txt", i);
+            String fileName = String.format("level%02d.txt", i);
             levels.add(new Level(fileName, this));
         }
 
@@ -62,15 +61,20 @@ public class Game {
     }
 
     public void startGame(){
+        setUpGame(levels.size());
         gameRunning = true;
-        System.out.println("Game Started");
+        System.out.println("\033[32mGame Started\033[0m");
+    }
+
+    public void stopGame() {
+        gameRunning = false;
     }
 
     public void removeLife(){
         lives--;
 
         if (lives > 0)
-            System.out.println("Remaining lives " + lives);
+            System.out.println("Remaining lives \033[1;34m" + lives + "\033[0m");
         else
             gameChangeListener.gameOver();
 
@@ -109,5 +113,9 @@ public class Game {
 
         System.out.println("Game Won");
         gameRunning = false;
+    }
+
+    public GameChangeListener getGameChangeListener() {
+        return gameChangeListener;
     }
 }

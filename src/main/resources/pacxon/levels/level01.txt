@@ -16,7 +16,8 @@
     {
       "positionX": 7,
       "positionY": 3,
-      "direction": "UP",
+      "direction": "DOWN_RIGHT",
+      "bonusSpeed": 2,
       "type": "m"
     },
     {
@@ -24,6 +25,12 @@
       "positionY": 5,
       "direction": "UP_LEFT",
       "type": "r"
-    }
+    },
+     {
+       "positionX": 18,
+       "positionY": 18,
+       "direction": "UP",
+       "type": "y"
+     }
   ]
 }

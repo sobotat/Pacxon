@@ -50,13 +50,16 @@ public class DrawingThread extends AnimationTimer {
 		if(keyCode == KeyCode.W || keyCode == KeyCode.S || keyCode == KeyCode.A || keyCode == KeyCode.D)
 			inputListener.keyPressed(type, keyCode);
 		else if(keyCode == KeyCode.L && type.equals(KeyEvent.KEY_RELEASED.toString())){
-			System.out.println("Change Level");
+			System.out.println("Changing to \033[1;36mNext Level\033[0m");
 			game.nextLevel();
 		}else if (keyCode == KeyCode.R && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			game.gameChangeListener.restartGame();
 
 			game.resetLife();
 			game.startGame();
+		}
+		else if (keyCode == KeyCode.ESCAPE && type.equals(KeyEvent.KEY_RELEASED.toString())){
+			App.switchToStartMenu();
 		}
 	}
 }

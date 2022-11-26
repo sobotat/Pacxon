@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import pacxon.Api;
+import pacxon.Collisionable;
 import pacxon.listeners.InputListener;
 import pacxon.Level;
 
@@ -91,18 +92,16 @@ public class Player extends Entity{
     }
 
     @Override
-    public void draw(GraphicsContext gc, int blockSize, boolean debug){
-        gc.drawImage(textures.get(0), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
+    public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug){
+        gc.drawImage(textures.get(currentDirection.animationId * 2 + currentAnimation), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
 
         if(debug)
-            drawDebug(gc, blockSize, 4, Color.GREY);
+            drawDebug(gc, blockSize, 4, Color.ORANGE);
     }
 
     @Override
     public void loadTextures() {
         textures = new ArrayList<>();
-        Api.addTexture( textures, "characters/p/player_stop1.png");
-        Api.addTexture( textures, "characters/p/player_stop2.png");
         Api.addTexture( textures, "characters/p/player_left1.png");
         Api.addTexture( textures, "characters/p/player_left2.png");
         Api.addTexture( textures, "characters/p/player_right1.png");
@@ -111,17 +110,26 @@ public class Player extends Entity{
         Api.addTexture( textures, "characters/p/player_up2.png");
         Api.addTexture( textures, "characters/p/player_down1.png");
         Api.addTexture( textures, "characters/p/player_down2.png");
+        Api.addTexture( textures, "characters/p/player_stop1.png");
+        Api.addTexture( textures, "characters/p/player_stop2.png");
     }
 
-    public void hit(){
-        position = new Point2D(0, 0);
-        direction = new Point2D(0, 0);
-        wantedDirection = Direction.STOP;
-        currentDirection = Direction.STOP;
+    @Override
+    public void hitBy(Collisionable obj) {
+        if(!obj.equals(this)){
+            System.out.println("Player was \033[1;31mHit\033[0m");
 
-        for(Point2D positionOfWall : route){
-            level.getLevelChangeListener().changeToEmpty(positionOfWall);
+            level.getGame().removeLife();
+
+            position = new Point2D(0, 0);
+            direction = new Point2D(0, 0);
+            wantedDirection = Direction.STOP;
+            currentDirection = Direction.STOP;
+
+            for(Point2D positionOfWall : route){
+                level.getLevelChangeListener().changeToEmpty(positionOfWall);
+            }
+            route.clear();
         }
-        route.clear();
     }
 }

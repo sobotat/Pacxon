@@ -65,12 +65,21 @@ public class App extends Application {
 	}
 
 	public static void switchToGame(){
-		System.out.println("Switching to GameView");
+		System.out.println("Switching to \033[1;38mGame View\033[0m");
 		if(primaryStage == null || gameViewScene == null)
 			return;
 
 		primaryStage.setScene(gameViewScene);
 		gameViewController.startGame();
+	}
+
+	public static void switchToStartMenu(){
+		System.out.println("Switching to \033[1;38mStart Menu\033[0m");
+		if(primaryStage == null || startMenuScene == null)
+			return;
+
+		primaryStage.setScene(startMenuScene);
+		gameViewController.stopGame();
 	}
 
 	@Override
@@ -84,6 +93,7 @@ public class App extends Application {
 	}
 
 	public void exitProgram(WindowEvent evt) {
+		System.out.println("\033[1;38mExiting Game ...\033[0m");
 		gameViewController.stopGame();
 		System.exit(0);
 	}

@@ -4,12 +4,13 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import pacxon.Collisionable;
 import pacxon.Level;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public abstract class Entity {
+public abstract class Entity implements Collisionable {
 
     Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
     Point2D startPosition, nextPosition;
@@ -20,13 +21,15 @@ public abstract class Entity {
     double speed = 3;
 
     public enum Direction{
-        UP(new Point2D(0, -1)), UP_LEFT(new Point2D(-1, -1)), UP_RIGHT(new Point2D(1, -1)),
-        DOWN(new Point2D(0, 1)), DOWN_LEFT(new Point2D(-1, 1)), DOWN_RIGHT(new Point2D(1, 1)),
-        LEFT(new Point2D(-1, 0)), RIGHT(new Point2D(1, 0)), STOP(new Point2D(0, 0));
+        UP(new Point2D(0, -1),2), UP_LEFT(new Point2D(-1, -1), 0), UP_RIGHT(new Point2D(1, -1), 1),
+        DOWN(new Point2D(0, 1),3), DOWN_LEFT(new Point2D(-1, 1), 0), DOWN_RIGHT(new Point2D(1, 1), 1),
+        LEFT(new Point2D(-1, 0), 0), RIGHT(new Point2D(1, 0), 1), STOP(new Point2D(0, 0), 4);
 
         final Point2D direction;
-        Direction(Point2D dir) {
-            direction = dir;
+        final int animationId;
+        Direction(Point2D dir, int animationId) {
+            this.direction = dir;
+            this.animationId = animationId;
         }
     }
 
@@ -40,7 +43,7 @@ public abstract class Entity {
 
     abstract public void update(double deltaTime);
 
-    abstract public void draw(GraphicsContext gc, int blockSize, boolean debug);
+    abstract public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug);
     abstract public void loadTextures();
 
     public void drawDebug(GraphicsContext gc, int blocksize, int offset, Color color){
@@ -52,11 +55,11 @@ public abstract class Entity {
                     blocksize - offset * 2, blocksize - offset * 2);
     }
 
-    public void drawNextPointDebug(GraphicsContext gc, int blocksize, int offset, Point2D direction){
+    public void drawNextPointDebug(GraphicsContext gc, int blocksize, int offset, Color color, Point2D direction){
         Point2D nextPoint = positionRounded.add(direction);
         nextPoint = new Point2D(Math.round(nextPoint.getX()), Math.round(nextPoint.getY()));
 
-        gc.setFill(Color.AQUA);
+        gc.setFill(color);
         gc.fillRect( nextPoint.getX() * blocksize + offset, nextPoint.getY() * blocksize + offset,
                 blocksize - offset * 2, blocksize - offset * 2);
     }
@@ -65,6 +68,7 @@ public abstract class Entity {
         this.direction = direction;
     }
 
+    // Getters
     public Point2D getPosition() {
         return position;
     }
@@ -76,5 +80,11 @@ public abstract class Entity {
     }
     public Point2D getNextPosition() {
         return nextPosition;
+    }
+
+    // Collisionable Interface
+    @Override
+    public Point2D getLocation() {
+        return positionRounded;
     }
 }

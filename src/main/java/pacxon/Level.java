@@ -4,10 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import pacxon.entities.Entity;
-import pacxon.entities.NPC;
-import pacxon.entities.NPC_Cyan;
-import pacxon.entities.Player;
+import pacxon.entities.*;
 import pacxon.listeners.InputListener;
 import pacxon.listeners.LevelChangeListener;
 
@@ -18,6 +15,9 @@ public class Level {
     Point2D mapSize;
     ArrayList<Entity> entities;
     Game game;
+
+    private int currentAnimation = 0;
+    private double timeFromLastAnimation;
 
     private final LevelChangeListener levelChangeListener;
 
@@ -46,7 +46,9 @@ public class Level {
 
             @Override
             public void changeToEmpty(Point2D position) {
-                map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Empty);
+                try{
+                    map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Empty);
+                }catch (IndexOutOfBoundsException ignored){}
             }
 
             @Override
@@ -64,44 +66,41 @@ public class Level {
     }
 
     public void update(double deltaTime){
+        timeFromLastAnimation += deltaTime;
+        if(timeFromLastAnimation > 0.15){
+            timeFromLastAnimation = 0;
+            currentAnimation = currentAnimation == 0 ? 1 : 0;
+        }
 
         Player player = null;
         for (Entity entity : entities) {
             entity.update(deltaTime);
 
-            if(entity instanceof Player p)
-                player = p;
+            if(entity instanceof Player pl)
+                player = pl;
         }
 
         if(player == null)
             return;
 
-        for(Entity entity : entities){
-            if(player.equals(entity))
-                continue;
-
-            if(entity instanceof NPC_Cyan npc_cyan){
-                if(!npc_cyan.isSpawned())
+        for(Entity entity : entities) {
+            for (Entity entity2 : entities) {
+                if (entity.equals(entity2))
                     continue;
 
-                if(player.getPositionRounded().getX() == npc_cyan.getPositionRounded().getX() &&
-                   player.getPositionRounded().getX() == npc_cyan.getPositionRounded().getX() ){
-                    System.out.println("Player was Hit by Cyan");
-                    player.hit();
-                    game.removeLife();
+                if (entity.isInCollision(entity2)) {
+                    entity.hitBy(entity2);
                 }
-                continue;
             }
 
-            for (Point2D point : player.route){
-                if(point.getX() == entity.getNextPosition().getX() &&
-                   point.getY() == entity.getNextPosition().getY() ){
+            if(!(entity instanceof Player)){
+                for (Point2D point : player.route){
+                    if(point.getX() == entity.getNextPosition().getX() &&
+                       point.getY() == entity.getNextPosition().getY() ){
 
-                    System.out.println("Player was Hit");
-                    player.hit();
-                    game.removeLife();
-
-                    return;
+                        player.hitBy(entity);
+                        return;
+                    }
                 }
             }
         }
@@ -125,7 +124,7 @@ public class Level {
         }
 
         for (Entity entity: entities) {
-            entity.draw(gc, blockSize, debug);
+            entity.draw(gc, blockSize, currentAnimation, debug);
         }
     }
 
@@ -174,6 +173,7 @@ public class Level {
     private void loadLevel(String levelFileName){
         entities = new ArrayList<>();
 
+        System.out.println("Loading Level :> \033[1;32m" + levelFileName +"\033[0m");
         String read = Files.readString( "\\levels\\" + levelFileName);
         if (read.equals("")) return;
 
@@ -182,14 +182,14 @@ public class Level {
             int mapX = levelObj.getInt("mapX");
             int mapY = levelObj.getInt("mapY");
             mapSize = new Point2D(mapX, mapY);
-            System.out.println("Map Loaded [" + mapX + "," + mapY + "]");
+            System.out.println("\033[1;32mMap\033[0m Loaded \t\t\t[" + mapX + "," + mapY + "]");
 
             JSONObject playerObj = levelObj.getJSONObject("Player");
             int playerPositionX = playerObj.getInt("positionX");
             int playerPositionY = playerObj.getInt("positionY");
             Point2D playerPosition = new Point2D( playerPositionX, playerPositionY);
             entities.add(new Player( this, playerPosition, new Point2D(0, 0)));
-            System.out.println("Player Loaded on [" + playerPosition.getX() + "," + playerPosition.getY() + "]");
+            System.out.println("\033[1;34mPlayer\033[0m Loaded on \t[" + playerPosition.getX() + "," + playerPosition.getY() + "]");
 
             JSONArray npcArrayObj = levelObj.getJSONArray("NPCs");
             for (int n = 0; n < npcArrayObj.length(); n++) {
@@ -200,16 +200,25 @@ public class Level {
                         npcObj.getInt("positionY"));
                 Entity.Direction npcDirection = Entity.Direction.valueOf(npcObj.getString("direction"));
 
-                if(type.equals("c")) {
-                    int spawnDelay = npcObj.getInt("spawnDelay");
-                    entities.add(new NPC_Cyan(this, npcPosition, npcDirection, spawnDelay));
-                }else
-                    entities.add(new NPC( this, npcPosition, npcDirection, type));
-                System.out.println("NPC Loaded on [" + npcPosition.getX() + "," + npcPosition.getY() + "]");
+                switch (type){
+                    case "c" -> {
+                        int spawnDelay = npcObj.getInt("spawnDelay");
+                        entities.add(new NPC_Cyan(this, npcPosition, npcDirection, spawnDelay));
+                    }
+                    case "m" -> {
+                        int bonusSpeed = npcObj.getInt("bonusSpeed");
+                        entities.add(new NPC_Magenta(this, npcPosition, npcDirection, bonusSpeed));
+                    }
+                    case "y" -> entities.add(new NPC_Yellow(this, npcPosition, npcDirection));
+                    case "r" -> entities.add(new NPC_Red(this, npcPosition, npcDirection));
+                    default -> entities.add(new NPC( this, npcPosition, npcDirection, type));
+                }
+
+                System.out.println("\033[1;36mNPC\033[0m Loaded on \t\t[" + npcPosition.getX() + "," + npcPosition.getY() + "]");
             }
 
         }catch (org.json.JSONException e){
-            System.out.println("Error in Loading Level");
+            System.out.println("\033[1;31mError in Loading Level\033[0m");
         }
     }
 
@@ -270,5 +279,9 @@ public class Level {
 
     public Point2D getMapSize(){
         return mapSize;
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

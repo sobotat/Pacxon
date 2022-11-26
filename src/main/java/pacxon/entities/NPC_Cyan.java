@@ -3,6 +3,7 @@ package pacxon.entities;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import pacxon.Collisionable;
 import pacxon.Level;
 
 import java.util.Timer;
@@ -42,17 +43,25 @@ public class NPC_Cyan extends NPC {
     }
 
     @Override
-    public void draw(GraphicsContext gc, int blockSize, boolean debug) {
+    public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug) {
         if(!spawned) {
             if(debug)
                 drawDebug(gc, blockSize, 5, Color.CYAN);
             return;
         }
 
-        super.draw(gc, blockSize, debug);
+        super.draw(gc, blockSize, currentAnimation, debug);
     }
 
     public boolean isSpawned(){
         return spawned;
+    }
+
+    @Override
+    public boolean isInCollision(Collisionable obj) {
+        if(isSpawned())
+            return super.isInCollision(obj);
+        else
+            return false;
     }
 }
