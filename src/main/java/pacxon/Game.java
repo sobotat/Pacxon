@@ -16,6 +16,7 @@ public class Game {
     boolean gameRunning;
 
     boolean debug;
+    boolean godMode;
 
     int blockSize = 20;
 
@@ -71,6 +72,11 @@ public class Game {
     }
 
     public void removeLife(){
+        if(godMode){
+            System.out.println("\033[1;34mYou was saved by most Powerful Power of God\033[0m");
+            return;
+        }
+
         lives--;
 
         if (lives > 0)

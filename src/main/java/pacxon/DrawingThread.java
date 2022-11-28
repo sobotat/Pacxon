@@ -67,6 +67,12 @@ public class DrawingThread extends AnimationTimer {
 		}
 		else if (keyCode == KeyCode.ESCAPE && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			App.switchToStartMenu();
+		}else if (keyCode == KeyCode.V && type.equals(KeyEvent.KEY_RELEASED.toString())){
+			game.debug = !game.debug;
+			System.out.println((game.debug ? "\033[1;32mDebugView Activated\033[0m" : "\033[1;31mDebugView Deactivated\033[0m"));
+		}else if (keyCode == KeyCode.G && type.equals(KeyEvent.KEY_RELEASED.toString())){
+			game.godMode = !game.godMode;
+			System.out.println((game.godMode ? "\033[1;32mGodMode Activated\033[0m" : "\033[1;31mGodMode Deactivated\033[0m"));
 		}
 	}
 }

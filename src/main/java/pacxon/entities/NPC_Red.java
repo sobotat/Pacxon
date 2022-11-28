@@ -13,8 +13,8 @@ public class NPC_Red extends NPC{
     public void update(double deltaTime) {
         super.update(deltaTime);
 
-        if (Math.abs(position.getX() - positionRounded.getX()) < 0.05 &&
-            Math.abs(position.getY() - positionRounded.getY()) < 0.05){
+        if (Math.abs(position.getX() - positionRounded.getX()) < 0.35 &&
+            Math.abs(position.getY() - positionRounded.getY()) < 0.35) {
 
             if(nextPosition.getX() == 0 || nextPosition.getX() == level.getMapSize().getX() -1 ||
                nextPosition.getY() == 0 || nextPosition.getY() == level.getMapSize().getY() -1 ){
@@ -22,7 +22,7 @@ public class NPC_Red extends NPC{
             }
 
             Level.LevelPoint nextPoint = level.tryGetPointOnMap((int) nextPosition.getX(), (int) nextPosition.getY(), hitTarget);
-            if(nextPoint == Level.LevelPoint.Wall){
+            if(nextPoint == Level.LevelPoint.Wall) {
                 level.getLevelChangeListener().changeToEmpty(nextPosition);
             }
         }

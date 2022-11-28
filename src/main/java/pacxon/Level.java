@@ -9,6 +9,7 @@ import pacxon.listeners.InputListener;
 import pacxon.listeners.LevelChangeListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Level {
     ArrayList<ArrayList<LevelPoint>> map;
@@ -53,12 +54,47 @@ public class Level {
 
             @Override
             public void startFill() {
+                LinkedList<Thread> threads = new LinkedList<>();
+
                 for (Entity entity : entities) {
                     if(entity instanceof NPC npc){
-                        if(!(npc instanceof NPC_Cyan))
-                            fillMap(npc.getPositionRounded());
+                        if(!(npc instanceof NPC_Cyan)) {
+                            Runnable runnable = () -> {
+                                fillMap(npc.getPositionRounded());
+                            };
+                            Thread thread = new Thread(runnable);
+                            thread.setDaemon(true);
+                            threads.add(thread);
+                        }
                     }
                 }
+
+                if(game.debug)
+                    System.out.println("\033[1;31mFill Started\033[0m");
+
+                for(Thread thread : threads){
+                    thread.start();
+                }
+
+                boolean running = true;
+                int lastCountOfRunning = 0;
+                while(running){
+                    running = false;
+                    int countOfRunning = 0;
+                    for(Thread thread : threads){
+                        if(thread.isAlive()) {
+                            running = true;
+                            countOfRunning++;
+                        }
+                    }
+
+                    if(countOfRunning != lastCountOfRunning){
+                        lastCountOfRunning = countOfRunning;
+                        if(game.debug)
+                            System.out.println("\t -> Remaining FillThreads [\033[1;31m" + lastCountOfRunning + "\033[0m]");
+                    }
+                }
+
                 finishFill();
                 App.gameViewController.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
             }
