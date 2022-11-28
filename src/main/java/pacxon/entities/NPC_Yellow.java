@@ -1,6 +1,7 @@
 package pacxon.entities;
 
 import javafx.geometry.Point2D;
+import pacxon.Collisionable;
 import pacxon.Level;
 
 public class NPC_Yellow extends NPC {
@@ -62,8 +63,6 @@ public class NPC_Yellow extends NPC {
                     }
                 }
 
-                //System.out.println(toLeft + " " + toRight + " | " + forward + " " + backward + " LDir " + currentDirection);
-
                 if(forward != hitTarget){
                     if(toRight != hitTarget) {
                         // Turn Right
@@ -85,5 +84,19 @@ public class NPC_Yellow extends NPC {
                 changeDirection(currentDirection.direction);
             }
         }
+    }
+
+    @Override
+    public boolean isInCollision(Collisionable obj) {
+        Point2D top = new Point2D( positionRounded.getX(), positionRounded.getY() - 1);
+        Point2D bottom = new Point2D( positionRounded.getX(), positionRounded.getY() + 1);
+        Point2D left = new Point2D(positionRounded.getX() - 1, positionRounded.getY());
+        Point2D right = new Point2D(positionRounded.getX() + 1, positionRounded.getY());
+
+        return ((obj.getLocation().equals(top) && Level.LevelPoint.Wall == level.tryGetPointOnMap((int)top.getX(), (int)top.getY(), Level.LevelPoint.Wall))     ||
+                (obj.getLocation().equals(bottom) && Level.LevelPoint.Wall == level.tryGetPointOnMap((int)bottom.getX(), (int)bottom.getY(), Level.LevelPoint.Wall))   ||
+                (obj.getLocation().equals(left) && Level.LevelPoint.Wall == level.tryGetPointOnMap((int)left.getX(), (int)right.getY(), Level.LevelPoint.Wall)) ||
+                (obj.getLocation().equals(right) && Level.LevelPoint.Wall == level.tryGetPointOnMap((int)top.getX(), (int)top.getY(), Level.LevelPoint.Wall))   ||
+                obj.getLocation().equals(positionRounded));
     }
 }

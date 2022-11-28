@@ -84,16 +84,11 @@ public class Level {
             return;
 
         for(Entity entity : entities) {
-            for (Entity entity2 : entities) {
-                if (entity.equals(entity2))
-                    continue;
-
-                if (entity.isInCollision(entity2)) {
-                    entity.hitBy(entity2);
-                }
-            }
-
             if(!(entity instanceof Player)){
+                if (entity.isInCollision(player)) {
+                    player.hitBy(entity);
+                }
+
                 for (Point2D point : player.route){
                     if(point.getX() == entity.getNextPosition().getX() &&
                        point.getY() == entity.getNextPosition().getY() ){
@@ -173,8 +168,8 @@ public class Level {
     private void loadLevel(String levelFileName){
         entities = new ArrayList<>();
 
-        System.out.println("Loading Level :> \033[1;32m" + levelFileName +"\033[0m");
-        String read = Files.readString( "\\levels\\" + levelFileName);
+        System.out.println("Loading Level \033[1;32m" + levelFileName +"\033[0m");
+        String read = Files.readString( "/levels/" + levelFileName);
         if (read.equals("")) return;
 
         try {

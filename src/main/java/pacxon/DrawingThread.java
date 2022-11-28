@@ -47,6 +47,13 @@ public class DrawingThread extends AnimationTimer {
 		String type = keyEvent.getEventType().getName();
 		KeyCode keyCode = keyEvent.getCode();
 
+		switch (keyEvent.getCode()){
+			case LEFT -> keyCode = KeyCode.A;
+			case RIGHT -> keyCode = KeyCode.D;
+			case UP -> keyCode = KeyCode.W;
+			case DOWN -> keyCode = KeyCode.S;
+		}
+
 		if(keyCode == KeyCode.W || keyCode == KeyCode.S || keyCode == KeyCode.A || keyCode == KeyCode.D)
 			inputListener.keyPressed(type, keyCode);
 		else if(keyCode == KeyCode.L && type.equals(KeyEvent.KEY_RELEASED.toString())){

@@ -22,7 +22,6 @@ public class Player extends Entity{
     public Player(Level level, Point2D startPosition, Point2D direction) {
         super( level, startPosition, direction);
         loadTextures();
-
         speed = 4;
 
         inputListener = (type, keyCode) -> {
@@ -64,6 +63,7 @@ public class Player extends Entity{
                 nextPosition = positionRounded.add(direction);
                 nextPosition = new Point2D(Math.round(nextPosition.getX()), Math.round(nextPosition.getY()));
 
+                //TODO: Fix Top and Bottom missing block
                 if(nextPosition.getX() <= 0)
                     wantedDirection = (wantedDirection != Direction.LEFT ? wantedDirection : Direction.STOP);
                 else if(nextPosition.getX() >= level.getMapSize().getX() - 1)
@@ -73,10 +73,9 @@ public class Player extends Entity{
                 else if(nextPosition.getY() >= level.getMapSize().getY() - 1)
                     wantedDirection = (wantedDirection != Direction.DOWN ? wantedDirection : Direction.STOP);
 
-                if(!(Level.LevelPoint.Empty == currentLevelPoint && wantedDirection == Direction.STOP))
+                if(!(Level.LevelPoint.Empty == currentLevelPoint && wantedDirection == Direction.STOP)) {
                     currentDirection = wantedDirection;
-
-                changeDirection(currentDirection.direction);
+                }
 
                 if (currentDirection != Direction.STOP) {
                     lastChangePosition = positionRounded;
@@ -87,6 +86,8 @@ public class Player extends Entity{
                         level.getLevelChangeListener().changeToRoute(positionRounded);
                     }
                 }
+
+                changeDirection(currentDirection.direction);
             }
         }
     }

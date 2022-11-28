@@ -27,9 +27,9 @@
       "type": "r"
     },
     {
-      "positionX": 15,
-      "positionY": 15,
-      "direction": "DOWN_RIGHT",
+      "positionX": 20,
+      "positionY": 20,
+      "direction": "RIGHT",
       "type": "y"
     }
   ]
