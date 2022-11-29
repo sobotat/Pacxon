@@ -5,20 +5,20 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import pacxon.Collisionable;
+import pacxon.Drawable;
 import pacxon.Level;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public abstract class Entity implements Collisionable {
+public abstract class Entity implements Collisionable, Drawable {
 
+    ArrayList<Image> textures = new ArrayList<>();
     Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
     Point2D startPosition, nextPosition;
     Point2D direction;
     Direction currentDirection = Direction.STOP;
-    ArrayList<Image> textures;
     Level level;
-    double speed = 3;
+    protected double speed, originalSpeed;
 
     public enum Direction{
         UP(new Point2D(0, -1),2), UP_LEFT(new Point2D(-1, -1), 0), UP_RIGHT(new Point2D(1, -1), 1),
@@ -33,19 +33,23 @@ public abstract class Entity implements Collisionable {
         }
     }
 
-    public Entity( Level level, Point2D startPosition, Point2D direction){
+    public Entity( Level level, Point2D startPosition, Point2D direction, int speed){
         this.startPosition = startPosition;
         this.position = startPosition;
         this.positionRounded = new Point2D(Math.round(position.getX()), Math.round(position.getY()));
         this.direction = direction;
         this.level = level;
+
+        this.speed = speed;
+        this.originalSpeed = speed;
     }
 
     abstract public void update(double deltaTime);
 
+    @Override
     abstract public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug);
-    abstract public void loadTextures();
 
+    @Override
     public void drawDebug(GraphicsContext gc, int blocksize, int offset, Color color){
         int posX = (int) positionRounded.getX();
         int posY = (int) positionRounded.getY();
@@ -63,6 +67,9 @@ public abstract class Entity implements Collisionable {
         gc.fillRect( nextPoint.getX() * blocksize + offset, nextPoint.getY() * blocksize + offset,
                 blocksize - offset * 2, blocksize - offset * 2);
     }
+
+    @Override
+    abstract public void loadTextures();
 
     protected void changeDirection(Point2D direction){
         this.direction = direction;
@@ -86,5 +93,13 @@ public abstract class Entity implements Collisionable {
     @Override
     public Point2D getLocation() {
         return positionRounded;
+    }
+
+    public void setSpeed(int speed){
+        this.speed = speed;
+    }
+
+    public void resetSpeed(){
+        this.speed = originalSpeed;
     }
 }

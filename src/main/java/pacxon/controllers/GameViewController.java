@@ -21,9 +21,7 @@ public class GameViewController {
     @FXML
     Canvas canvas_Game;
     @FXML
-    HBox hbox_Life;
-    @FXML
-    Text tv_MapFill, tv_Level;
+    Text tv_MapFill, tv_Level, tv_Lives;
 
     private final LinkedList<Node> removedLives = new LinkedList<>();
 
@@ -33,30 +31,25 @@ public class GameViewController {
             public void mapFillPercentageChanged(int percents) {
                 tv_MapFill.setText(percents + "%");
             }
-
             @Override
             public void levelChanged(int levelNumber) {
                 tv_Level.setText("Level " + (levelNumber + 1));
             }
-
             @Override
-            public void removeLife() {
-                removedLives.add(hbox_Life.getChildren().remove(0));
+            public void gameWon() {
+                tv_Level.setText("Game Won");
             }
-
             @Override
-            public void resetLife() {
-                removedLives.addAll(hbox_Life.getChildren());
-                hbox_Life.getChildren().clear();
-
-                for (int i = removedLives.size() - 1; i >= 0; i--){
-                    hbox_Life.getChildren().add(removedLives.get(i));
-                }
-                removedLives.clear();
+            public void gameOver() {
+                tv_Level.setText("Game Over");
+            }
+            @Override
+            public void livesChanged(int lives) {
+                tv_Lives.setText("Lives " + lives);
             }
         };
 
-        game = new Game(2, true);
+        game = new Game(3, false);
         timer = new DrawingThread(canvas_Game, scene, game);
         timer.start();
     }

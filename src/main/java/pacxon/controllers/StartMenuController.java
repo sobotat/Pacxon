@@ -7,7 +7,7 @@ import pacxon.App;
 public class StartMenuController {
 
     @FXML
-    void onSelectLevelClicked() {
+    void onStartGameClicked() {
         App.switchToGame();
     }
 

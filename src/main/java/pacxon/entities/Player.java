@@ -19,10 +19,9 @@ public class Player extends Entity{
     private boolean creatingRoute = false;
     public ArrayList<Point2D> route = new ArrayList<>();
 
-    public Player(Level level, Point2D startPosition, Point2D direction) {
-        super( level, startPosition, direction);
+    public Player(Level level, Point2D startPosition, Point2D direction, int speed) {
+        super( level, startPosition, direction, speed);
         loadTextures();
-        speed = 4;
 
         inputListener = (type, keyCode) -> {
             if(type.equals(KeyEvent.KEY_PRESSED.toString()) && keyCode == KeyCode.W){
@@ -50,28 +49,25 @@ public class Player extends Entity{
         this.positionRounded = new Point2D(Math.round(position.getX()), Math.round(position.getY()));
 
         Level.LevelPoint currentLevelPoint = level.tryGetPointOnMap((int)positionRounded.getX(), (int)positionRounded.getY(), Level.LevelPoint.Wall);
-        if( Level.LevelPoint.Wall == currentLevelPoint && currentDirection == Direction.STOP && creatingRoute){
+        if( Level.LevelPoint.Wall == currentLevelPoint && creatingRoute){
             creatingRoute = false;
             route.clear();
             level.getLevelChangeListener().startFill();
         }
 
         if(!lastChangePosition.equals(positionRounded)) {
-            if (Math.abs(position.getX() - positionRounded.getX()) < 0.05 &&
-                Math.abs(position.getY() - positionRounded.getY()) < 0.05) {
+            if (Math.abs(position.getX() - positionRounded.getX()) < 0.08 &&
+                Math.abs(position.getY() - positionRounded.getY()) < 0.08) {
 
                 nextPosition = positionRounded.add(direction);
                 nextPosition = new Point2D(Math.round(nextPosition.getX()), Math.round(nextPosition.getY()));
 
-                //TODO: Fix Top and Bottom missing block
-                if(nextPosition.getX() <= 0)
-                    wantedDirection = (wantedDirection != Direction.LEFT ? wantedDirection : Direction.STOP);
-                else if(nextPosition.getX() >= level.getMapSize().getX() - 1)
-                    wantedDirection = (wantedDirection != Direction.RIGHT ? wantedDirection : Direction.STOP);
-                else if (nextPosition.getY() <= 0)
-                    wantedDirection = (wantedDirection != Direction.UP ? wantedDirection : Direction.STOP);
-                else if(nextPosition.getY() >= level.getMapSize().getY() - 1)
-                    wantedDirection = (wantedDirection != Direction.DOWN ? wantedDirection : Direction.STOP);
+                // Out Of Map CHECK
+                Point2D nextWantedPosition = positionRounded.add(wantedDirection.direction);
+                if(!(nextWantedPosition.getX() >= 0 && nextWantedPosition.getX() <= level.getMapSize().getX() - 1 &&
+                     nextWantedPosition.getY() >= 0 && nextWantedPosition.getY() <= level.getMapSize().getY() - 1) ){
+                    wantedDirection = Direction.STOP;
+                }
 
                 if(!(Level.LevelPoint.Empty == currentLevelPoint && wantedDirection == Direction.STOP)) {
                     currentDirection = wantedDirection;
@@ -118,6 +114,9 @@ public class Player extends Entity{
     @Override
     public void hitBy(Collisionable obj) {
         if(!obj.equals(this)){
+            if(level.getNPCanBeKilled())
+                return;
+
             System.out.println("Player was \033[1;31mHit\033[0m");
 
             level.getGame().removeLife();

@@ -2,8 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -16,7 +14,7 @@
          <children>
             <BorderPane prefHeight="41.0" prefWidth="964.0">
                <left>
-                  <Text fx:id="tv_MapFill" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="10%" wrappingWidth="65.0" BorderPane.alignment="CENTER">
+                  <Text fx:id="tv_MapFill" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="10%" wrappingWidth="90.0" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="Agency FB Bold" size="27.0" />
                      </font>
@@ -25,36 +23,6 @@
                      </BorderPane.margin>
                   </Text>
                </left>
-               <right>
-                  <HBox fx:id="hbox_Life" alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="65.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@objects/life1.png" />
-                           </image>
-                           <HBox.margin>
-                              <Insets right="-5.0" />
-                           </HBox.margin>
-                        </ImageView>
-                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@objects/life1.png" />
-                           </image>
-                           <HBox.margin>
-                              <Insets right="-5.0" />
-                           </HBox.margin>
-                        </ImageView>
-                        <ImageView fitHeight="35.0" fitWidth="18.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@objects/life1.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                     <BorderPane.margin>
-                        <Insets right="10.0" />
-                     </BorderPane.margin>
-                  </HBox>
-               </right>
                <center>
                   <Text fx:id="tv_Level" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Level 1" textAlignment="CENTER" wrappingWidth="112.42244148254395" BorderPane.alignment="CENTER">
                      <font>
@@ -62,6 +30,16 @@
                      </font>
                   </Text>
                </center>
+               <right>
+                  <Text fx:id="tv_Lives" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Lives 3" textAlignment="RIGHT" wrappingWidth="90.0" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Agency FB Bold" size="27.0" />
+                     </font>
+                     <BorderPane.margin>
+                        <Insets right="10.0" />
+                     </BorderPane.margin>
+                  </Text>
+               </right>
             </BorderPane>
          </children>
          <VBox.margin>

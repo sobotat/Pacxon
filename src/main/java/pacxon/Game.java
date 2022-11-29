@@ -10,7 +10,7 @@ public class Game {
 
     LinkedList<Level> levels;
     final GameChangeListener gameChangeListener;
-    int currentLevel = 0;
+    int currentLevel = 0, numberOfMaps;
     private int lives = 3;
 
     boolean gameRunning;
@@ -22,9 +22,7 @@ public class Game {
 
     public Game(int numberOfMaps, boolean debug){
         this.debug = debug;
-        //Level.generateLevelTemplate();
-
-        setUpGame(numberOfMaps);
+        this.numberOfMaps = numberOfMaps;
 
         gameChangeListener = new GameChangeListener() {
             @Override
@@ -36,6 +34,7 @@ public class Game {
             @Override
             public void gameOver() {
                 System.out.println("\033[1;31mGame Over\033[0m");
+                App.gameViewController.getHudListener().gameOver();
                 gameRunning = false;
             }
 
@@ -59,11 +58,13 @@ public class Game {
         }
 
         App.gameViewController.getHudListener().levelChanged(currentLevel);
+        App.gameViewController.getHudListener().livesChanged(lives);
     }
 
     public void startGame(){
-        setUpGame(levels.size());
+        setUpGame(numberOfMaps);
         gameRunning = true;
+        levels.get(currentLevel).setUpBonuses();
         System.out.println("\033[32mGame Started\033[0m");
     }
 
@@ -84,7 +85,7 @@ public class Game {
         else
             gameChangeListener.gameOver();
 
-        App.gameViewController.getHudListener().removeLife();
+        App.gameViewController.getHudListener().livesChanged(lives);
     }
 
     public void update(double deltaTime){
@@ -107,16 +108,20 @@ public class Game {
 
     public void resetLife() {
         lives = 3;
-        App.gameViewController.getHudListener().resetLife();
+        App.gameViewController.getHudListener().livesChanged(lives);
     }
 
     public void nextLevel() {
         if(currentLevel < levels.size() - 1) {
             currentLevel++;
+            lives++;
+            levels.get(currentLevel).setUpBonuses();
             App.gameViewController.getHudListener().levelChanged(currentLevel);
+            App.gameViewController.getHudListener().livesChanged(lives);
             return;
         }
 
+        App.gameViewController.getHudListener().gameWon();
         System.out.println("Game Won");
         gameRunning = false;
     }

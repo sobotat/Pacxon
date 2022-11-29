@@ -13,9 +13,10 @@ public class NPC extends Entity{
 
     String type;
     Level.LevelPoint hitTarget;
+    boolean alive = true;
 
     public NPC(Level level, Point2D startPosition, Direction direction, String type) {
-        super( level, startPosition, direction.direction);
+        super( level, startPosition, direction.direction, 3);
 
         this.hitTarget = Level.LevelPoint.Wall;
         this.currentDirection = direction;
@@ -25,6 +26,9 @@ public class NPC extends Entity{
 
     @Override
     public void update(double deltaTime) {
+        if(!alive)
+            return;
+
         this.position = position.add(direction.multiply(deltaTime * speed));
         this.positionRounded = new Point2D(Math.round(position.getX()), Math.round(position.getY()));
 
@@ -98,13 +102,25 @@ public class NPC extends Entity{
 
     @Override
     public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug){
-        int animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
+        if(!alive)
+            return;
+
+        int animationId;
+        if(!level.getNPCanBeKilled())
+            animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
+        else
+            animationId = 8;
+
         gc.drawImage(textures.get(animationId + currentAnimation), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
 
         if (debug) {
             drawDebug(gc, blockSize, 4, Color.DARKRED);
             drawNextPointDebug(gc, blockSize, 4, Color.MEDIUMSEAGREEN, direction);
         }
+    }
+
+    protected void kill(){
+        alive = false;
     }
 
     @Override
@@ -118,10 +134,29 @@ public class NPC extends Entity{
         Api.addTexture( textures,"characters/" + type + "/npc_up2.png");
         Api.addTexture( textures,"characters/" + type + "/npc_down1.png");
         Api.addTexture( textures,"characters/" + type + "/npc_down2.png");
+        Api.addTexture( textures,"characters/" + "g" + "/npc_blue1.png");
+        Api.addTexture( textures,"characters/" + "g" + "/npc_blue2.png");
+        Api.addTexture( textures,"characters/" + "g" + "/npc_white1.png");
+        Api.addTexture( textures,"characters/" + "g" + "/npc_white2.png");
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public boolean isInCollision(Collisionable obj) {
+        if(alive)
+            return super.isInCollision(obj);
+        else
+            return false;
     }
 
     @Override
     public void hitBy(Collisionable obj) {
-
+        if(obj instanceof Player && level.getNPCanBeKilled() && alive){
+            System.out.println("Player have killed \033[1;31mNPC\033[0m");
+            kill();
+        }
     }
 }

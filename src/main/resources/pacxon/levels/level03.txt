@@ -10,21 +10,21 @@
     {
       "positionX": 10,
       "positionY": 10,
-      "direction": "DOWN_RIGHT",
+      "direction": "DOWN_LEFT",
       "spawnDelay": 10,
       "type": "c"
     },
     {
       "positionX": 17,
       "positionY": 13,
-      "direction": "UP_RIGHT",
+      "direction": "UP_LEFT",
       "bonusSpeed": 2,
       "type": "m"
     },
     {
       "positionX": 3,
       "positionY": 15,
-      "direction": "UP_LEFT",
+      "direction": "UP_RIGHT",
       "type": "r"
     },
      {
@@ -36,29 +36,29 @@
   ],
   "BONUS": [
       {
-        "positionX": 17,
-        "positionY": 6,
+        "positionX": 6,
+        "positionY": 17,
         "time": 5,
         "spawnDelay": 10,
         "type": "stop-b"
       },
       {
-        "positionX": 12,
-        "positionY": 14,
+        "positionX": 14,
+        "positionY": 12,
         "time": 10,
         "spawnDelay": 5,
         "type": "slow-b"
       },
       {
-        "positionX": 13,
-        "positionY": 7,
+        "positionX": 7,
+        "positionY": 13,
         "time": 20,
         "spawnDelay": 30,
         "type": "kill-b"
       },
       {
-        "positionX": 3,
-        "positionY": 17,
+        "positionX": 17,
+        "positionY": 3,
         "time": 15,
         "spawnDelay": 15,
         "speed": 10,

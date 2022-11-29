@@ -5,8 +5,7 @@ import javafx.geometry.Point2D;
 public interface Collisionable {
 
     default boolean isInCollision(Collisionable obj){
-        return (this.getLocation().getX() == obj.getLocation().getX() &&
-                this.getLocation().getY() == obj.getLocation().getY());
+        return this.getLocation().equals(obj.getLocation());
     }
 
     void hitBy(Collisionable obj);

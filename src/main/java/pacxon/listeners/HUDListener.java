@@ -4,7 +4,7 @@ public interface HUDListener {
 
     void mapFillPercentageChanged(int percents);
     void levelChanged(int levelNumber);
-
-    void removeLife();
-    void resetLife();
+    void gameWon();
+    void gameOver();
+    void livesChanged(int lives);
 }

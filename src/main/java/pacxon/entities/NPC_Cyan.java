@@ -59,7 +59,7 @@ public class NPC_Cyan extends NPC {
 
     @Override
     public boolean isInCollision(Collisionable obj) {
-        if(isSpawned())
+        if(isSpawned() && alive)
             return super.isInCollision(obj);
         else
             return false;

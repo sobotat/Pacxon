@@ -3,7 +3,9 @@ package pacxon;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import pacxon.bonuses.*;
 import pacxon.entities.*;
 import pacxon.listeners.InputListener;
 import pacxon.listeners.LevelChangeListener;
@@ -15,10 +17,12 @@ public class Level {
     ArrayList<ArrayList<LevelPoint>> map;
     Point2D mapSize;
     ArrayList<Entity> entities;
+    ArrayList<Bonus> bonuses;
     Game game;
 
     private int currentAnimation = 0;
     private double timeFromLastAnimation;
+    private boolean npcCanBeKilled;
 
     private final LevelChangeListener levelChangeListener;
 
@@ -47,9 +51,7 @@ public class Level {
 
             @Override
             public void changeToEmpty(Point2D position) {
-                try{
-                    map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Empty);
-                }catch (IndexOutOfBoundsException ignored){}
+                map.get((int) position.getY()).set((int) position.getX(), LevelPoint.Empty);
             }
 
             @Override
@@ -58,7 +60,7 @@ public class Level {
 
                 for (Entity entity : entities) {
                     if(entity instanceof NPC npc){
-                        if(!(npc instanceof NPC_Cyan)) {
+                        if(!(npc instanceof NPC_Cyan) && npc.isAlive()) {
                             Runnable runnable = () -> {
                                 fillMap(npc.getPositionRounded());
                             };
@@ -123,16 +125,21 @@ public class Level {
             if(!(entity instanceof Player)){
                 if (entity.isInCollision(player)) {
                     player.hitBy(entity);
+                    entity.hitBy(player);
                 }
 
                 for (Point2D point : player.route){
-                    if(point.getX() == entity.getNextPosition().getX() &&
-                       point.getY() == entity.getNextPosition().getY() ){
-
+                    if(point.equals(entity.getNextPosition())) {
                         player.hitBy(entity);
                         return;
                     }
                 }
+            }
+        }
+
+        for(Bonus bonus : bonuses){
+            if( bonus.isInCollision(player)){
+                bonus.hitBy(player);
             }
         }
     }
@@ -156,6 +163,10 @@ public class Level {
 
         for (Entity entity: entities) {
             entity.draw(gc, blockSize, currentAnimation, debug);
+        }
+
+        for (Bonus bonus: bonuses) {
+            bonus.draw(gc, blockSize, currentAnimation, debug);
         }
     }
 
@@ -203,6 +214,7 @@ public class Level {
 
     private void loadLevel(String levelFileName){
         entities = new ArrayList<>();
+        bonuses = new ArrayList<>();
 
         System.out.println("Loading Level \033[1;32m" + levelFileName +"\033[0m");
         String read = Files.readString( "/levels/" + levelFileName);
@@ -218,8 +230,9 @@ public class Level {
             JSONObject playerObj = levelObj.getJSONObject("Player");
             int playerPositionX = playerObj.getInt("positionX");
             int playerPositionY = playerObj.getInt("positionY");
+            int playerSpeed = playerObj.getInt("speed");
             Point2D playerPosition = new Point2D( playerPositionX, playerPositionY);
-            entities.add(new Player( this, playerPosition, new Point2D(0, 0)));
+            entities.add(new Player( this, playerPosition, new Point2D(0, 0), playerSpeed));
             System.out.println("\033[1;34mPlayer\033[0m Loaded on \t[" + playerPosition.getX() + "," + playerPosition.getY() + "]");
 
             JSONArray npcArrayObj = levelObj.getJSONArray("NPCs");
@@ -246,6 +259,32 @@ public class Level {
                 }
 
                 System.out.println("\033[1;36mNPC\033[0m Loaded on \t\t[" + npcPosition.getX() + "," + npcPosition.getY() + "]");
+            }
+
+            try {
+                JSONArray bonusArrayObj = levelObj.getJSONArray("BONUS");
+                for(int n = 0; n < bonusArrayObj.length(); n++){
+                    JSONObject bonusObj = bonusArrayObj.getJSONObject(n);
+                    String type = bonusObj.getString("type");
+                    int time = bonusObj.getInt("time");
+                    int spawnDelay = bonusObj.getInt("spawnDelay");
+                    Point2D bonusPosition = new Point2D(bonusObj.getInt("positionX"),
+                                                        bonusObj.getInt("positionY"));
+
+                    switch (type){
+                        case "stop-b" -> bonuses.add(new StopBonus(this, bonusPosition, time, spawnDelay));
+                        case "slow-b" -> bonuses.add(new SlowBonus(this, bonusPosition, time, spawnDelay));
+                        case "kill-b" -> bonuses.add(new KillBonus(this, bonusPosition, time, spawnDelay));
+                        case "speed-b" -> {
+                            int speed = bonusObj.getInt("speed");
+                            bonuses.add(new SpeedBonus(this, bonusPosition, time, spawnDelay, speed));
+                        }
+                        default -> System.out.println("\033[1;31mWrong Bonus Type\033[0m");
+                    }
+
+                }
+            } catch (JSONException e) {
+                System.out.println("\033[1;31mError in Loading Bonuses\033[0m");
             }
 
         }catch (org.json.JSONException e){
@@ -308,11 +347,61 @@ public class Level {
         return sum;
     }
 
+    public void setTmpSpeedForNPC(int speed){
+        for(Entity entity : entities){
+            if(entity instanceof NPC){
+                entity.setSpeed(speed);
+            }
+        }
+    }
+
+    public void setSpeedForNPCToOriginate(){
+        for(Entity entity : entities){
+            if(entity instanceof NPC){
+                entity.resetSpeed();
+            }
+        }
+    }
+
+    public void setTmpSpeedForPlayer(int speed){
+        for(Entity entity : entities){
+            if(entity instanceof Player){
+                entity.setSpeed(speed);
+            }
+        }
+    }
+
+    public void setSpeedForPlayerToOriginate(){
+        for(Entity entity : entities){
+            if(entity instanceof Player){
+                entity.resetSpeed();
+            }
+        }
+    }
+
+    public void setUpBonuses(){
+        for (Bonus bonus : bonuses){
+            bonus.setUpBonus();
+        }
+    }
+
+    public void enableNPCCanBeKilled(){
+        npcCanBeKilled = true;
+    }
+
+    public void disableNPCCanBeKilled(){
+        npcCanBeKilled = false;
+    }
+
     public Point2D getMapSize(){
         return mapSize;
     }
 
     public Game getGame() {
         return game;
+    }
+
+    public boolean getNPCanBeKilled() {
+        return npcCanBeKilled;
     }
 }

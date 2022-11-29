@@ -3,7 +3,8 @@
   "mapY": 20,
   "Player": {
     "positionX": 0,
-    "positionY": 1
+    "positionY": 0,
+    "speed": 6
   },
   "NPCs": [
     {
@@ -32,5 +33,36 @@
        "direction": "UP",
        "type": "y"
      }
+  ],
+  "BONUS": [
+      {
+        "positionX": 6,
+        "positionY": 13,
+        "time": 5,
+        "spawnDelay": 15,
+        "type": "stop-b"
+      },
+      {
+        "positionX": 15,
+        "positionY": 12,
+        "time": 10,
+        "spawnDelay": 10,
+        "type": "slow-b"
+      },
+      {
+        "positionX": 3,
+        "positionY": 17,
+        "time": 15,
+        "spawnDelay": 25,
+        "type": "kill-b"
+      },
+      {
+        "positionX": 15,
+        "positionY": 8,
+        "time": 15,
+        "spawnDelay": 20,
+        "speed": 10,
+        "type": "speed-b"
+      }
   ]
 }

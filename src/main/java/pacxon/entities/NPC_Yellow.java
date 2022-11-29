@@ -88,6 +88,9 @@ public class NPC_Yellow extends NPC {
 
     @Override
     public boolean isInCollision(Collisionable obj) {
+        if(!alive)
+            return false;
+
         Point2D top = new Point2D( positionRounded.getX(), positionRounded.getY() - 1);
         Point2D bottom = new Point2D( positionRounded.getX(), positionRounded.getY() + 1);
         Point2D left = new Point2D(positionRounded.getX() - 1, positionRounded.getY());

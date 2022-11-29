@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Api {
 
-    public static void addTexture( ArrayList<Image> textures, String fileLocation){
+    public static void addTexture(ArrayList<Image> textures, String fileLocation){
         Image img = new Image(
                 Objects.requireNonNull( Api.class.getResourceAsStream("/pacxon/" + fileLocation)));
 

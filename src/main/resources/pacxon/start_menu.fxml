@@ -23,7 +23,7 @@
             </Text>
             <VBox alignment="CENTER" prefHeight="485.0" prefWidth="355.0">
                <children>
-                  <HBox id="btn_Black" alignment="CENTER" maxWidth="-Infinity" onMouseClicked="#onSelectLevelClicked" prefHeight="42.0" prefWidth="293.0">
+                  <HBox id="btn_Black" alignment="CENTER" maxWidth="-Infinity" onMouseClicked="#onStartGameClicked" prefHeight="42.0" prefWidth="293.0">
                      <children>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -33,7 +33,7 @@
                               <Insets left="-25.0" right="5.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Level" textAlignment="CENTER">
+                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Game" textAlignment="CENTER">
                            <font>
                               <Font name="Agency FB Bold" size="28.0" />
                            </font>
