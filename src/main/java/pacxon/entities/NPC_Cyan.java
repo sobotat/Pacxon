@@ -11,9 +11,9 @@ import java.util.TimerTask;
 
 public class NPC_Cyan extends NPC {
 
-    boolean spawned;
-    int spawnDelay;
-    Timer timer;
+    protected boolean spawned;
+    protected int spawnDelay;
+    private Timer timer;
 
     public NPC_Cyan(Level level, Point2D startPosition, Direction direction, int spawnDelay) {
         super(level, startPosition, direction, "c");

@@ -22,6 +22,7 @@ public class KillBonus extends Bonus {
             return;
 
         alreadyActivated = true;
+        level.setTmpSpeedForNPC(1);
         level.enableNPCCanBeKilled();
 
         System.out.println("Kill Bonus \033[1;32mActivated\033[0m");
@@ -30,6 +31,7 @@ public class KillBonus extends Bonus {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+               level.resetSpeedForNPC();
                level.disableNPCCanBeKilled();
                 System.out.println("Kill Bonus \033[1;31mDeactivated\033[0m");
             }

@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import pacxon.Api;
 import pacxon.Collisionable;
+import pacxon.Files;
 import pacxon.listeners.InputListener;
 import pacxon.Level;
 
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class Player extends Entity{
 
-    public InputListener inputListener;
-    public Direction wantedDirection = Direction.STOP;
+    protected InputListener inputListener;
+    protected Direction wantedDirection = Direction.STOP;
     private boolean creatingRoute = false;
     public ArrayList<Point2D> route = new ArrayList<>();
 
@@ -99,18 +99,19 @@ public class Player extends Entity{
     @Override
     public void loadTextures() {
         textures = new ArrayList<>();
-        Api.addTexture( textures, "characters/p/player_left1.png");
-        Api.addTexture( textures, "characters/p/player_left2.png");
-        Api.addTexture( textures, "characters/p/player_right1.png");
-        Api.addTexture( textures, "characters/p/player_right2.png");
-        Api.addTexture( textures, "characters/p/player_up1.png");
-        Api.addTexture( textures, "characters/p/player_up2.png");
-        Api.addTexture( textures, "characters/p/player_down1.png");
-        Api.addTexture( textures, "characters/p/player_down2.png");
-        Api.addTexture( textures, "characters/p/player_stop1.png");
-        Api.addTexture( textures, "characters/p/player_stop2.png");
+        Files.addTexture( textures, "characters/p/player_left1.png");
+        Files.addTexture( textures, "characters/p/player_left2.png");
+        Files.addTexture( textures, "characters/p/player_right1.png");
+        Files.addTexture( textures, "characters/p/player_right2.png");
+        Files.addTexture( textures, "characters/p/player_up1.png");
+        Files.addTexture( textures, "characters/p/player_up2.png");
+        Files.addTexture( textures, "characters/p/player_down1.png");
+        Files.addTexture( textures, "characters/p/player_down2.png");
+        Files.addTexture( textures, "characters/p/player_stop1.png");
+        Files.addTexture( textures, "characters/p/player_stop2.png");
     }
 
+    // Collision
     @Override
     public void hitBy(Collisionable obj) {
         if(!obj.equals(this)){
@@ -131,5 +132,10 @@ public class Player extends Entity{
             }
             route.clear();
         }
+    }
+
+    // Getters
+    public InputListener getInputListener() {
+        return inputListener;
     }
 }

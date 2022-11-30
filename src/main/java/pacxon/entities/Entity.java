@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public abstract class Entity implements Collisionable, Drawable {
 
-    ArrayList<Image> textures = new ArrayList<>();
-    Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
-    Point2D startPosition, nextPosition;
-    Point2D direction;
-    Direction currentDirection = Direction.STOP;
-    Level level;
+    protected ArrayList<Image> textures = new ArrayList<>();
+    protected Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
+    protected Point2D startPosition, nextPosition;
+    protected Point2D direction;
+    protected Direction currentDirection = Direction.STOP;
+    protected Level level;
     protected double speed, originalSpeed;
 
     public enum Direction{

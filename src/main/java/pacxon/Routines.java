@@ -1,8 +1,6 @@
 package pacxon;
 
 public class Routines {
-
-	
 	
 	public static void sleep(int timeInMilisenonds) {
 		try {

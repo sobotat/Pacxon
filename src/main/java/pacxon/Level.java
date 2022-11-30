@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Level {
-    ArrayList<ArrayList<LevelPoint>> map;
-    Point2D mapSize;
-    ArrayList<Entity> entities;
-    ArrayList<Bonus> bonuses;
-    Game game;
+
+    protected Point2D mapSize;
+    private ArrayList<ArrayList<LevelPoint>> map;
+    private ArrayList<Entity> entities;
+    private ArrayList<Bonus> bonuses;
+    protected Game game;
 
     private int currentAnimation = 0;
     private double timeFromLastAnimation;
@@ -71,7 +72,7 @@ public class Level {
                     }
                 }
 
-                if(game.debug)
+                if(game.isDebug())
                     System.out.println("\033[1;31mFill Started\033[0m");
 
                 for(Thread thread : threads){
@@ -92,7 +93,7 @@ public class Level {
 
                     if(countOfRunning != lastCountOfRunning){
                         lastCountOfRunning = countOfRunning;
-                        if(game.debug)
+                        if(game.isDebug())
                             System.out.println("\t -> Remaining FillThreads [\033[1;31m" + lastCountOfRunning + "\033[0m]");
                     }
                 }
@@ -173,7 +174,7 @@ public class Level {
     public InputListener getPlayerInputListener(){
         for (Entity entity : entities) {
             if(entity instanceof Player player){
-                return player.inputListener;
+                return player.getInputListener();
             }
         }
         return null;
@@ -191,6 +192,7 @@ public class Level {
         }
     }
 
+    // Map and Level
     private void generateMap(int x, int y){
         map = new ArrayList<>(y);
 
@@ -211,7 +213,6 @@ public class Level {
             map.add(line);
         }
     }
-
     private void loadLevel(String levelFileName){
         entities = new ArrayList<>();
         bonuses = new ArrayList<>();
@@ -292,6 +293,7 @@ public class Level {
         }
     }
 
+    // Fill
     public void updateCurrentLevelFillPercent(){
         int percentFilledOfMap = (int)percentFilledOfMap();
         App.gameViewController.getHudListener().mapFillPercentageChanged(percentFilledOfMap);
@@ -299,7 +301,6 @@ public class Level {
         if(percentFilledOfMap >= 80)
             game.gameChangeListener.levelWon();
     }
-
     private void fillMap( Point2D position){
         LevelPoint levelPoint = tryGetPointOnMap((int)position.getX(), (int)position.getY(), LevelPoint.Wall);
 
@@ -313,7 +314,6 @@ public class Level {
         fillMap(new Point2D(position.getX() - 1, position.getY()));
         fillMap(new Point2D(position.getX() + 1, position.getY()));
     }
-
     private void finishFill(){
         for (ArrayList<LevelPoint> row: map) {
             for(int x = 0; x < row.size(); x++){
@@ -330,11 +330,6 @@ public class Level {
         }
         updateCurrentLevelFillPercent();
     }
-
-    public float percentFilledOfMap(){
-        return ((float)countWalls() / (float)((mapSize.getX() - 2) * (mapSize.getY() - 2)) * 100);
-    }
-
     private int countWalls(){
         int sum = 0;
         for (int y = 1; y < map.size() - 1; y++) {
@@ -346,7 +341,11 @@ public class Level {
         }
         return sum;
     }
+    public float percentFilledOfMap(){
+        return ((float)countWalls() / (float)((mapSize.getX() - 2) * (mapSize.getY() - 2)) * 100);
+    }
 
+    // Speeds
     public void setTmpSpeedForNPC(int speed){
         for(Entity entity : entities){
             if(entity instanceof NPC){
@@ -354,15 +353,13 @@ public class Level {
             }
         }
     }
-
-    public void setSpeedForNPCToOriginate(){
+    public void resetSpeedForNPC(){
         for(Entity entity : entities){
             if(entity instanceof NPC){
                 entity.resetSpeed();
             }
         }
     }
-
     public void setTmpSpeedForPlayer(int speed){
         for(Entity entity : entities){
             if(entity instanceof Player){
@@ -370,7 +367,6 @@ public class Level {
             }
         }
     }
-
     public void setSpeedForPlayerToOriginate(){
         for(Entity entity : entities){
             if(entity instanceof Player){
@@ -379,28 +375,26 @@ public class Level {
         }
     }
 
+    // Bonuses
     public void setUpBonuses(){
         for (Bonus bonus : bonuses){
             bonus.setUpBonus();
         }
     }
-
     public void enableNPCCanBeKilled(){
         npcCanBeKilled = true;
     }
-
     public void disableNPCCanBeKilled(){
         npcCanBeKilled = false;
     }
 
+    // Getters
     public Point2D getMapSize(){
         return mapSize;
     }
-
     public Game getGame() {
         return game;
     }
-
     public boolean getNPCanBeKilled() {
         return npcCanBeKilled;
     }

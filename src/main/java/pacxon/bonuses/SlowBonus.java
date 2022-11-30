@@ -30,7 +30,7 @@ public class SlowBonus extends Bonus {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-               level.setSpeedForNPCToOriginate();
+               level.resetSpeedForNPC();
                 System.out.println("Slow Bonus \033[1;31mDeactivated\033[0m");
             }
         }, time * 1000L);

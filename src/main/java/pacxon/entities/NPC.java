@@ -3,17 +3,17 @@ package pacxon.entities;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import pacxon.Api;
 import pacxon.Collisionable;
+import pacxon.Files;
 import pacxon.Level;
 
 import java.util.ArrayList;
 
 public class NPC extends Entity{
 
-    String type;
-    Level.LevelPoint hitTarget;
-    boolean alive = true;
+    protected String type;
+    protected Level.LevelPoint hitTarget;
+    protected boolean alive = true;
 
     public NPC(Level level, Point2D startPosition, Direction direction, String type) {
         super( level, startPosition, direction.direction, 3);
@@ -102,20 +102,20 @@ public class NPC extends Entity{
 
     @Override
     public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug){
-        if(!alive)
-            return;
+        if(alive) {
+            int animationId;
+            if (!level.getNPCanBeKilled())
+                animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
+            else
+                animationId = 8;
 
-        int animationId;
-        if(!level.getNPCanBeKilled())
-            animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
-        else
-            animationId = 8;
-
-        gc.drawImage(textures.get(animationId + currentAnimation), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
+            gc.drawImage(textures.get(animationId + currentAnimation), position.getX() * blockSize, position.getY() * blockSize, blockSize, blockSize);
+        }
 
         if (debug) {
             drawDebug(gc, blockSize, 4, Color.DARKRED);
-            drawNextPointDebug(gc, blockSize, 4, Color.MEDIUMSEAGREEN, direction);
+            if(alive)
+                drawNextPointDebug(gc, blockSize, 4, Color.MEDIUMSEAGREEN, direction);
         }
     }
 
@@ -126,24 +126,29 @@ public class NPC extends Entity{
     @Override
     public void loadTextures() {
         textures = new ArrayList<>();
-        Api.addTexture( textures,"characters/" + type + "/npc_left1.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_left2.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_right1.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_right2.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_up1.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_up2.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_down1.png");
-        Api.addTexture( textures,"characters/" + type + "/npc_down2.png");
-        Api.addTexture( textures,"characters/" + "g" + "/npc_blue1.png");
-        Api.addTexture( textures,"characters/" + "g" + "/npc_blue2.png");
-        Api.addTexture( textures,"characters/" + "g" + "/npc_white1.png");
-        Api.addTexture( textures,"characters/" + "g" + "/npc_white2.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_left1.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_left2.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_right1.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_right2.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_up1.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_up2.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_down1.png");
+        Files.addTexture( textures,"characters/" + type + "/npc_down2.png");
+        Files.addTexture( textures,"characters/" + "g" + "/npc_blue1.png");
+        Files.addTexture( textures,"characters/" + "g" + "/npc_blue2.png");
+        Files.addTexture( textures,"characters/" + "g" + "/npc_white1.png");
+        Files.addTexture( textures,"characters/" + "g" + "/npc_white2.png");
     }
 
+    // Getters
     public boolean isAlive() {
         return alive;
     }
+    public String getType() {
+        return type;
+    }
 
+    // Collisions
     @Override
     public boolean isInCollision(Collisionable obj) {
         if(alive)

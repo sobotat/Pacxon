@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import pacxon.DrawingThread;
 import pacxon.Game;
@@ -23,8 +22,6 @@ public class GameViewController {
     @FXML
     Text tv_MapFill, tv_Level, tv_Lives;
 
-    private final LinkedList<Node> removedLives = new LinkedList<>();
-
     public void setUpGame(Scene scene){
         hudListener = new HUDListener() {
             @Override
@@ -34,6 +31,10 @@ public class GameViewController {
             @Override
             public void levelChanged(int levelNumber) {
                 tv_Level.setText("Level " + (levelNumber + 1));
+            }
+            @Override
+            public void levelWon() {
+                tv_Level.setText("Level Won");
             }
             @Override
             public void gameWon() {

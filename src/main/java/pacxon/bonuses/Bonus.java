@@ -2,9 +2,9 @@ package pacxon.bonuses;
 
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
-import pacxon.Api;
 import pacxon.Collisionable;
 import pacxon.Drawable;
+import pacxon.Files;
 import pacxon.Level;
 import pacxon.entities.Player;
 
@@ -14,13 +14,13 @@ import java.util.TimerTask;
 
 public abstract class Bonus implements Collisionable, Drawable {
 
-    ArrayList<Image> textures = new ArrayList<>();
-    Level level;
-    String type;
-    Point2D position;
-    Timer timer;
-    int time, spawnDelay;
-    boolean alreadyActivated, spawned;
+    protected ArrayList<Image> textures = new ArrayList<>();
+    protected Level level;
+    protected String type;
+    protected Point2D position;
+    protected Timer timer;
+    protected int time, spawnDelay;
+    protected boolean alreadyActivated, spawned;
 
     public Bonus(Level level, String type, Point2D position, int time, int spawnDelay) {
         this.level = level;
@@ -58,6 +58,6 @@ public abstract class Bonus implements Collisionable, Drawable {
     @Override
     public void loadTextures() {
         textures = new ArrayList<>();
-        Api.addTexture( textures, "bonus/" + type + ".png");
+        Files.addTexture( textures, "bonus/" + type + ".png");
     }
 }

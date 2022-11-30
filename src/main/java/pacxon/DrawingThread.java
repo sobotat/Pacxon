@@ -10,8 +10,6 @@ import pacxon.listeners.InputListener;
 
 public class DrawingThread extends AnimationTimer {
 
-	private final Scene scene;
-	private final Canvas canvas;
 	private final GraphicsContext gc;
 
 	private final Game game;
@@ -19,8 +17,6 @@ public class DrawingThread extends AnimationTimer {
 	private long lastTime;
 
 	public DrawingThread(Canvas canvas, Scene scene, Game game) {
-		this.scene = scene;
-		this.canvas = canvas;
 		this.gc = canvas.getGraphicsContext2D();
 		this.game = game;
 
@@ -43,7 +39,7 @@ public class DrawingThread extends AnimationTimer {
 
 
 	private void keyboardHandler(KeyEvent keyEvent){
-		InputListener inputListener = game.levels.get(game.currentLevel).getPlayerInputListener();
+		InputListener inputListener = game.getCurrentInputListener();
 		String type = keyEvent.getEventType().getName();
 		KeyCode keyCode = keyEvent.getCode();
 
@@ -68,11 +64,11 @@ public class DrawingThread extends AnimationTimer {
 		else if (keyCode == KeyCode.ESCAPE && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			App.switchToStartMenu();
 		}else if (keyCode == KeyCode.V && type.equals(KeyEvent.KEY_RELEASED.toString())){
-			game.debug = !game.debug;
-			System.out.println((game.debug ? "\033[1;32mDebugView Activated\033[0m" : "\033[1;31mDebugView Deactivated\033[0m"));
+			game.setDebug(!game.isDebug());
+			System.out.println((game.isDebug() ? "\033[1;32mDebugView Activated\033[0m" : "\033[1;31mDebugView Deactivated\033[0m"));
 		}else if (keyCode == KeyCode.G && type.equals(KeyEvent.KEY_RELEASED.toString())){
-			game.godMode = !game.godMode;
-			System.out.println((game.godMode ? "\033[1;32mGodMode Activated\033[0m" : "\033[1;31mGodMode Deactivated\033[0m"));
+			game.setGodMode(!game.isGodMode());
+			System.out.println((game.isGodMode() ? "\033[1;32mGodMode Activated\033[0m" : "\033[1;31mGodMode Deactivated\033[0m"));
 		}
 	}
 }

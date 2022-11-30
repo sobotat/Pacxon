@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Wall {
 
     public enum WallStyle {
-        STRAIGHT, CURVE, T_CROSS, CROSS, END, POINT, POINT_DARK, POINT_ROUTE;
+        STRAIGHT, CURVE, T_CROSS, CROSS, END, POINT, POINT_DARK, POINT_ROUTE
     }
 
     private static ArrayList<Image> textures;
@@ -23,13 +23,13 @@ public class Wall {
 
     public static void loadTextures() {
         Wall.textures = new ArrayList<>();
-        Api.addTexture( Wall.textures,"walls/wall_straight.png");
-        Api.addTexture( Wall.textures,"walls/wall_curve.png");
-        Api.addTexture( Wall.textures,"walls/wall_tcross.png");
-        Api.addTexture( Wall.textures,"walls/wall_cross.png");
-        Api.addTexture( Wall.textures,"walls/wall_end.png");
-        Api.addTexture( Wall.textures,"walls/wall_point.png");
-        Api.addTexture( Wall.textures,"walls/wall_point_dark.png");
-        Api.addTexture( Wall.textures,"walls/wall_point_route.png");
+        Files.addTexture( Wall.textures,"walls/wall_straight.png");
+        Files.addTexture( Wall.textures,"walls/wall_curve.png");
+        Files.addTexture( Wall.textures,"walls/wall_tcross.png");
+        Files.addTexture( Wall.textures,"walls/wall_cross.png");
+        Files.addTexture( Wall.textures,"walls/wall_end.png");
+        Files.addTexture( Wall.textures,"walls/wall_point.png");
+        Files.addTexture( Wall.textures,"walls/wall_point_dark.png");
+        Files.addTexture( Wall.textures,"walls/wall_point_route.png");
     }
 }
