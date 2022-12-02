@@ -36,7 +36,7 @@ public class Level {
         loadLevel(levelFileName);
         //loadEntitiesFromMap();
         generateMap( (int)mapSize.getX(), (int)mapSize.getY());
-        App.gameViewController.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+        game.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
 
         levelChangeListener = new LevelChangeListener(){
             @Override
@@ -99,7 +99,7 @@ public class Level {
                 }
 
                 finishFill();
-                App.gameViewController.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+                game.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
             }
         };
     }
@@ -296,7 +296,7 @@ public class Level {
     // Fill
     public void updateCurrentLevelFillPercent(){
         int percentFilledOfMap = (int)percentFilledOfMap();
-        App.gameViewController.getHudListener().mapFillPercentageChanged(percentFilledOfMap);
+        game.getHudListener().mapFillPercentageChanged(percentFilledOfMap);
 
         if(percentFilledOfMap >= 80)
             game.gameChangeListener.levelWon();

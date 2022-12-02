@@ -3,6 +3,7 @@ package pacxon;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import pacxon.listeners.GameChangeListener;
+import pacxon.listeners.HUDListener;
 import pacxon.listeners.InputListener;
 
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ public class Game {
 
     private LinkedList<Level> levels;
     protected final GameChangeListener gameChangeListener;
+    protected final HUDListener hudListener;
     private int currentLevel = 0;
     private final int numberOfMaps;
     private int lives = 3;
@@ -24,16 +26,17 @@ public class Game {
 
     int blockSize = 20;
 
-    public Game(int numberOfMaps, boolean debug){
+    public Game(int numberOfMaps, HUDListener hudListener, boolean debug){
         this.debug = debug;
         this.numberOfMaps = numberOfMaps;
+        this.hudListener = hudListener;
 
         gameChangeListener = new GameChangeListener() {
             @Override
             public void levelWon() {
                 System.out.println("Percent " + levels.get(currentLevel).percentFilledOfMap());
 
-                App.gameViewController.getHudListener().levelWon();
+                hudListener.levelWon();
 
                 Timer timer = new Timer(true);
                 timer.schedule(new TimerTask() {
@@ -47,7 +50,7 @@ public class Game {
             @Override
             public void gameOver() {
                 System.out.println("\033[1;31mGame Over\033[0m");
-                App.gameViewController.getHudListener().gameOver();
+                hudListener.gameOver();
                 gameRunning = false;
             }
 
@@ -70,8 +73,8 @@ public class Game {
             levels.add(new Level(fileName, this));
         }
 
-        App.gameViewController.getHudListener().levelChanged(currentLevel);
-        App.gameViewController.getHudListener().livesChanged(lives);
+        hudListener.levelChanged(currentLevel);
+        hudListener.livesChanged(lives);
     }
 
     public void update(double deltaTime){
@@ -107,12 +110,14 @@ public class Game {
             currentLevel++;
             lives++;
             levels.get(currentLevel).setUpBonuses();
-            App.gameViewController.getHudListener().levelChanged(currentLevel);
-            App.gameViewController.getHudListener().livesChanged(lives);
+            hudListener.levelChanged(currentLevel);
+            hudListener.livesChanged(lives);
+            hudListener.mapFillPercentageChanged(0);
+            System.out.println("Level Won");
             return;
         }
 
-        App.gameViewController.getHudListener().gameWon();
+        hudListener.gameWon();
         System.out.println("Game Won");
         gameRunning = false;
     }
@@ -131,11 +136,11 @@ public class Game {
         else
             gameChangeListener.gameOver();
 
-        App.gameViewController.getHudListener().livesChanged(lives);
+        hudListener.livesChanged(lives);
     }
     public void resetLife() {
         lives = 3;
-        App.gameViewController.getHudListener().livesChanged(lives);
+        hudListener.livesChanged(lives);
     }
 
     // Setters
@@ -161,5 +166,8 @@ public class Game {
     }
     public InputListener getCurrentInputListener(){
         return levels.get(currentLevel).getPlayerInputListener();
+    }
+    public HUDListener getHudListener() {
+        return hudListener;
     }
 }

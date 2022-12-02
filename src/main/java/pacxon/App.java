@@ -22,10 +22,10 @@ public class App extends Application {
 	private Canvas canvas;
 	private static Stage stage;
 
-	public static App app;
-	public static StartMenuController startMenuController;
-	public static GameViewController gameViewController;
-	public static Stage primaryStage;
+	private static App app;
+	private static StartMenuController startMenuController;
+	private static GameViewController gameViewController;
+	private static Stage primaryStage;
 	private static Scene startMenuScene, gameViewScene, winViewScene, scoreViewScene;
 	
 	@Override
@@ -96,5 +96,19 @@ public class App extends Application {
 		System.out.println("\033[1;38mExiting Game ...\033[0m");
 		gameViewController.stopGame();
 		System.exit(0);
+	}
+
+	// Getters
+	public static App getApp() {
+		return app;
+	}
+	public static StartMenuController getStartMenuController() {
+		return startMenuController;
+	}
+	public static GameViewController getGameViewController() {
+		return gameViewController;
+	}
+	public static Stage getPrimaryStage() {
+		return primaryStage;
 	}
 }

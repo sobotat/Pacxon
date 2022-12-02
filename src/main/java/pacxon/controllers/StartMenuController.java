@@ -13,6 +13,6 @@ public class StartMenuController {
 
     @FXML
     void onExitClicked() {
-        App.app.exitProgram(new WindowEvent(App.primaryStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+        App.getApp().exitProgram(new WindowEvent(App.getPrimaryStage(), WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 }

@@ -50,7 +50,7 @@ public class GameViewController {
             }
         };
 
-        game = new Game(3, false);
+        game = new Game(3, hudListener,false);
         timer = new DrawingThread(canvas_Game, scene, game);
         timer.start();
     }
@@ -61,9 +61,5 @@ public class GameViewController {
 
     public void stopGame(){
         game.stopGame();
-    }
-
-    public HUDListener getHudListener() {
-        return hudListener;
     }
 }
