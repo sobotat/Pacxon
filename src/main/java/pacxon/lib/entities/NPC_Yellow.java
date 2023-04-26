@@ -1,8 +1,6 @@
 package pacxon.lib.entities;
 
 import javafx.geometry.Point2D;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import pacxon.lib.Collisionable;
 import pacxon.lib.Level;
 
@@ -28,7 +26,7 @@ public class NPC_Yellow extends NPC {
                 nextPosition = positionRounded.add(direction);
                 nextPosition = new Point2D(Math.round(nextPosition.getX()), Math.round(nextPosition.getY()));
 
-                Level.LevelPoint nextPoint = nextPoint = level.tryGetPointOnMap((int) nextPosition.getX(), (int) nextPosition.getY(), hitTarget);
+                Level.LevelPoint nextPoint = level.tryGetPointOnMap((int) nextPosition.getX(), (int) nextPosition.getY(), hitTarget);
 
                 Level.LevelPoint top = level.tryGetPointOnMap((int) positionRounded.getX(), (int) positionRounded.getY() - 1, hitTarget);
                 Level.LevelPoint bottom = level.tryGetPointOnMap((int) positionRounded.getX(), (int) positionRounded.getY() + 1, hitTarget);
