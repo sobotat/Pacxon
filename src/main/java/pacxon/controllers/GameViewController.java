@@ -5,10 +5,15 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.text.Text;
+import lombok.extern.log4j.Log4j2;
+import pacxon.App;
 import pacxon.DrawingThread;
 import pacxon.lib.Game;
+import pacxon.lib.api.LevelClient;
+import pacxon.lib.api.entity.LevelEntity;
 import pacxon.lib.listeners.HUDListener;
 
+@Log4j2
 public class GameViewController {
 
     AnimationTimer timer;
@@ -43,11 +48,22 @@ public class GameViewController {
             }
             @Override
             public void livesChanged(int lives) {
-                tv_Lives.setText("Lives " + lives);
+                tv_Lives.setText(App.getGameViewRB().getString("lives") + " " + lives);
             }
         };
 
-        game = new Game(1, hudListener,false, "src/main/resources/pacxon/");
+        int numOfLevels = 0;
+
+        try {
+            LevelClient levelClient = LevelEntity.getClient();
+            if (levelClient != null) {
+                numOfLevels = levelClient.getNumberOfLevel();
+            }
+        } catch (Exception e){
+            log.error(e.getMessage());
+        }
+
+        game = new Game(numOfLevels, hudListener,false, "src/main/resources/pacxon/");
         timer = new DrawingThread(canvas_Game, scene, game);
         timer.start();
     }

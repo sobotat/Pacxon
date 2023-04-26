@@ -3,7 +3,6 @@ package pacxon.lib.api;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import pacxon.lib.api.entity.LevelEntity;
-import pacxon.lib.api.entity.MapEntity;
 
 import java.util.List;
 
@@ -17,6 +16,12 @@ public interface LevelClient {
     String createLevel(LevelEntity level);
 
     @POST
+    @Path("createNew")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    String createNewLevel(LevelEntity level);
+
+    @POST
     @Path("get")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
@@ -26,4 +31,9 @@ public interface LevelClient {
     @Path("/getAll")
     @Produces(MediaType.APPLICATION_JSON)
     List<LevelEntity> getLevels();
+
+    @GET
+    @Path("/getCount")
+    @Produces(MediaType.TEXT_PLAIN)
+    int getNumberOfLevel();
 }

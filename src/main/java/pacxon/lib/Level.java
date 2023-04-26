@@ -2,8 +2,9 @@ package pacxon.lib;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import pacxon.App;
 import pacxon.lib.api.entity.*;
 import pacxon.lib.bonuses.*;
 import pacxon.lib.entities.*;
@@ -13,20 +14,22 @@ import pacxon.lib.listeners.LevelChangeListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+@Log4j2
 public class Level {
-    private static final Logger logger = LogManager.getLogger(Level.class.getName());
 
-    protected Point2D mapSize;
+    @Getter protected Point2D mapSize;
     private ArrayList<ArrayList<LevelPoint>> map;
     private ArrayList<Entity> entities;
     private ArrayList<Bonus> bonuses;
-    protected Game game;
-    private boolean invalidLevel = false;
+    @Getter protected Game game;
+    @Getter private boolean invalidLevel = false;
 
     private int currentAnimation = 0;
     private double timeFromLastAnimation;
-    private boolean npcCanBeKilled;
+    @Getter private boolean npcCanBeKilled;
 
     private LevelChangeListener levelChangeListener;
 
@@ -67,49 +70,40 @@ public class Level {
 
             @Override
             public void startFill() {
-                LinkedList<Thread> threads = new LinkedList<>();
+                CompletableFuture.runAsync(() -> {
+                    LinkedList<CompletableFuture<Void>> fillFutures = new LinkedList<>();
 
-                for (Entity entity : entities) {
-                    if(entity instanceof NPC npc){
-                        if(!(npc instanceof NPC_Cyan) && npc.isAlive()) {
-                            Runnable runnable = () -> {
-                                fillMap(npc.getPositionRounded());
-                            };
-                            Thread thread = new Thread(runnable);
-                            thread.setDaemon(true);
-                            threads.add(thread);
-                        }
-                    }
-                }
+                    if(game.isDebug())
+                        log.debug("FillThreads [\033[1;33m" + App.getLogTextRB().getString("started") + "\033[0m]");
 
-                if(game.isDebug())
-                    logger.debug("\033[1;31mFill Started\033[0m");
+                    entities.stream()
+                            .filter(entity -> entity instanceof NPC && !(entity instanceof NPC_Cyan))
+                            .map(entity -> (NPC) entity)
+                            .forEach(npc -> {
+                                CompletableFuture<Void> fill = CompletableFuture.runAsync(() -> fillMap(npc.getPositionRounded()));
+                                fillFutures.add(fill);
+                            });
 
-                for(Thread thread : threads){
-                    thread.start();
-                }
+                    try {
+                        CompletableFuture.allOf(fillFutures.toArray(new CompletableFuture[fillFutures.size()])).get();
 
-                boolean running = true;
-                int lastCountOfRunning = 0;
-                while(running){
-                    running = false;
-                    int countOfRunning = 0;
-                    for(Thread thread : threads){
-                        if(thread.isAlive()) {
-                            running = true;
-                            countOfRunning++;
-                        }
-                    }
-
-                    if(countOfRunning != lastCountOfRunning){
-                        lastCountOfRunning = countOfRunning;
                         if(game.isDebug())
-                            logger.debug("\t -> Remaining FillThreads [\033[1;31m" + lastCountOfRunning + "\033[0m]");
+                            log.debug("FillThreads [\033[1;32m" + App.getLogTextRB().getString("done") + "\033[0m]");
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
                     }
-                }
 
-                finishFill();
-                game.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+                }).thenRun(() -> {
+                    if(game.isDebug())
+                        log.debug(App.getLogTextRB().getString("finishing") + " Fill [\033[1;33m" + App.getLogTextRB().getString("started") + "\033[0m]");
+
+                    finishFill();
+
+                    if(game.isDebug())
+                        log.debug(App.getLogTextRB().getString("finishing") + " Fill [\033[1;32m" + App.getLogTextRB().getString("done") + "\033[0m]");
+
+                    game.getHudListener().mapFillPercentageChanged((int) percentFilledOfMap());
+                });
             }
         };
     }
@@ -227,22 +221,20 @@ public class Level {
         entities = new ArrayList<>();
         bonuses = new ArrayList<>();
 
-        logger.info("Loading Level \033[1;32m" + levelId +"\033[0m");
+        log.info(App.getLogTextRB().getString("loading") + " \033[1;32m" + levelId +"\033[0m");
 
         try {
             LevelEntity levelEntity = LevelEntity.getClient().getLevel(levelId);
 
             if(levelEntity == null) {
-                logger.error("\033[1;31mError level is NULL\033[0m");
+                log.error("\033[1;31mError level is NULL\033[0m");
                 return false;
             }
-
-            logger.debug(levelEntity);
 
             int mapX = levelEntity.getMap().getSizeX();
             int mapY = levelEntity.getMap().getSizeY();
             mapSize = new Point2D(mapX, mapY);
-            logger.info("\033[1;32mMap\033[0m Loaded \t\t\t[" + mapX + "," + mapY + "]");
+            log.info("\033[1;32mMap\033[0m " + App.getLogTextRB().getString("loaded") + " \t\t\t[" + mapX + "," + mapY + "]");
 
             PlayerEntity playerObj = levelEntity.getPlayer();
             int playerPositionX = playerObj.getPositionX();
@@ -250,7 +242,7 @@ public class Level {
             int playerSpeed = playerObj.getSpeed();
             Point2D playerPosition = new Point2D( playerPositionX, playerPositionY);
             entities.add(new Player( this, playerPosition, new Point2D(0, 0), playerSpeed));
-            logger.info("\033[1;34mPlayer\033[0m Loaded on \t[" + playerPosition.getX() + "," + playerPosition.getY() + "]");
+            log.info("\033[1;34mPlayer\033[0m "  + App.getLogTextRB().getString("loaded") +  " \t[" + playerPosition.getX() + "," + playerPosition.getY() + "]");
 
             List<NPCEntity> npcArrayObj = levelEntity.getNpcs();
             for (NPCEntity npcObj : npcArrayObj) {
@@ -273,7 +265,7 @@ public class Level {
                     default -> entities.add(new NPC( this, npcPosition, npcDirection, type));
                 }
 
-                logger.info("\033[1;36mNPC\033[0m Loaded on \t\t[" + npcPosition.getX() + "," + npcPosition.getY() + "]");
+                log.info("\033[1;36mNPC\033[0m " + App.getLogTextRB().getString("loaded") + " \t\t[" + npcPosition.getX() + "," + npcPosition.getY() + "]");
             }
 
             List<MapBonusEntity> bonusArrayObj = levelEntity.getBonuses();
@@ -293,14 +285,13 @@ public class Level {
                         int speed = bonus.getSpeed();
                         bonuses.add(new SpeedBonus(this, bonusPosition, time, spawnDelay, speed));
                     }
-                    default -> logger.error("\033[1;31mWrong Bonus Type\033[0m");
+                    default -> log.error("\033[1;31m" + App.getLogTextRB().getString("wrong_bonus_type") + "\033[0m");
                 }
 
             }
 
         }catch (Exception e){
-            logger.error("\033[1;31mError in Loading Level >> " + e.getMessage() + "\033[0m");
-            //logger.error("\033[1;31m >> " + e.getMessage() + "\033[0m");
+            log.error("\033[1;31m"+ App.getLogTextRB().getString("error_in_loading_level") + " >> " + e.getMessage() + "\033[0m");
             return false;
         }
 
@@ -400,19 +391,5 @@ public class Level {
     }
     public void disableNPCCanBeKilled(){
         npcCanBeKilled = false;
-    }
-
-    // Getters
-    public Point2D getMapSize(){
-        return mapSize;
-    }
-    public Game getGame() {
-        return game;
-    }
-    public boolean getNPCanBeKilled() {
-        return npcCanBeKilled;
-    }
-    public boolean getIsInvalid() {
-        return invalidLevel;
     }
 }

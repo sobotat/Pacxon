@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import lombok.Getter;
 import pacxon.lib.Collisionable;
 import pacxon.lib.Drawable;
 import pacxon.lib.Level;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
 public abstract class Entity implements Collisionable, Drawable {
 
     protected ArrayList<Image> textures = new ArrayList<>();
-    protected Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
-    protected Point2D startPosition, nextPosition;
+    @Getter protected Point2D position, positionRounded, lastChangePosition = new Point2D(-1, -1);
+    @Getter protected Point2D startPosition, nextPosition;
     protected Point2D direction;
     protected Direction currentDirection = Direction.STOP;
     protected Level level;
@@ -73,20 +74,6 @@ public abstract class Entity implements Collisionable, Drawable {
 
     protected void changeDirection(Point2D direction){
         this.direction = direction;
-    }
-
-    // Getters
-    public Point2D getPosition() {
-        return position;
-    }
-    public Point2D getPositionRounded() {
-        return positionRounded;
-    }
-    public Point2D getLastChangePosition() {
-        return lastChangePosition;
-    }
-    public Point2D getNextPosition() {
-        return nextPosition;
     }
 
     // Collisionable Interface

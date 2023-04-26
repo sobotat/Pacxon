@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pacxon.App;
 import pacxon.lib.api.Files;
 import pacxon.lib.Collisionable;
 import pacxon.lib.Drawable;
@@ -40,7 +41,7 @@ public abstract class Bonus implements Collisionable, Drawable {
             public void run() {
                 spawned = true;
                 timer = null;
-                logger.info("New Bonus \033[1;34mSpawn\033[0m");
+                logger.info(App.getLogTextRB().getString("new_bonus") + " \033[1;34m" + App.getLogTextRB().getString("spawned") + "\033[0m");
             }
         }, spawnDelay * 1000L);
     }

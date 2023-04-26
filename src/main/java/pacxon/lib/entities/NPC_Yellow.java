@@ -7,7 +7,6 @@ import pacxon.lib.Collisionable;
 import pacxon.lib.Level;
 
 public class NPC_Yellow extends NPC {
-    private static final Logger logger = LogManager.getLogger(NPC_Yellow.class.getName());
 
     public NPC_Yellow(Level level, Point2D startPosition, Direction direction) {
         super(level, startPosition, direction, "y");
@@ -59,7 +58,6 @@ public class NPC_Yellow extends NPC {
                         forwardDir = Direction.DOWN; backwardDir = Direction.UP; toLeftDir = Direction.RIGHT; toRightDir = Direction.LEFT;
                     }
                     default -> {
-                        logger.error("\033[1;31mWrong Direction Input to Yellow Ghost\033[0m");
                         currentDirection = Direction.STOP;
                         changeDirection(currentDirection.direction);
                         return;

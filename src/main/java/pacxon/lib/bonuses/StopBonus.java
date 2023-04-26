@@ -3,15 +3,17 @@ package pacxon.lib.bonuses;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pacxon.App;
 import pacxon.lib.Level;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Log4j2
 public class StopBonus extends Bonus {
-    private static final Logger logger = LogManager.getLogger(StopBonus.class.getName());
 
     public StopBonus(Level level, Point2D position, int time, int spawnDelay) {
         super(level, "stop-b", position, time, spawnDelay);
@@ -27,14 +29,14 @@ public class StopBonus extends Bonus {
         alreadyActivated = true;
         level.setTmpSpeedForNPC(0);
 
-        logger.info("Stop Bonus \033[1;32mActivated\033[0m");
+        log.info("Stop Bonus \033[1;32m" + App.getLogTextRB().getString("activated") + "\033[0m");
 
         timer = new Timer(true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                level.resetSpeedForNPC();
-               logger.info("Stop Bonus \033[1;31mDeactivated\033[0m");
+               log.info("Stop Bonus \033[1;31m" + App.getLogTextRB().getString("deactivated") + "\033[0m");
             }
         }, time * 1000L);
     }

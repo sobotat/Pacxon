@@ -1,0 +1,174 @@
+###
+POST http://localhost:8080/level/createNew
+Content-Type: application/json
+
+{
+  "id": "level01",
+  "map": {
+    "sizeX": 25,
+    "sizeY": 20
+  },
+  "player": {
+    "positionX": 0,
+    "positionY": 0,
+    "speed": 6
+  },
+  "npcs": [
+    {
+      "positionX": 4,
+      "positionY": 7,
+      "direction": "UP_RIGHT",
+      "spawnDelay": 10,
+      "type": "c"
+    },
+    {
+      "positionX": 7,
+      "positionY": 3,
+      "direction": "DOWN_RIGHT",
+      "bonusSpeed": 2,
+      "type": "m"
+    },
+    {
+      "positionX": 13,
+      "positionY": 5,
+      "direction": "UP_LEFT",
+      "type": "r"
+    },
+    {
+      "positionX": 18,
+      "positionY": 18,
+      "direction": "UP",
+      "type": "y"
+    }
+  ],
+  "bonuses": [
+    {
+      "positionX": 6,
+      "positionY": 13,
+      "bonus": {
+        "time": 5,
+        "spawnDelay": 15,
+        "type": "stop-b"
+      }
+    },
+    {
+      "positionX": 15,
+      "positionY": 12,
+      "bonus": {
+        "time": 10,
+        "spawnDelay": 10,
+        "type": "slow-b"
+      }
+    },
+    {
+      "positionX": 3,
+      "positionY": 17,
+      "bonus": {
+        "time": 15,
+        "spawnDelay": 25,
+        "type": "kill-b"
+      }
+    },
+    {
+      "positionX": 15,
+      "positionY": 8,
+      "bonus": {
+        "time": 15,
+        "spawnDelay": 20,
+        "type": "speed-b"
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+###
+POST http://localhost:8080/level/createNew
+Content-Type: application/json
+
+{
+  "id": "level02",
+  "map": {
+    "sizeX": 25,
+    "sizeY": 20
+  },
+  "player": {
+    "positionX": 0,
+    "positionY": 0,
+    "speed": 6
+  },
+  "npcs": [
+    {
+      "positionX": 10,
+      "positionY": 10,
+      "direction": "DOWN_RIGHT",
+      "spawnDelay": 10,
+      "type": "c"
+    },
+    {
+      "positionX": 17,
+      "positionY": 13,
+      "direction": "UP_RIGHT",
+      "bonusSpeed": 2,
+      "type": "m"
+    },
+    {
+      "positionX": 3,
+      "positionY": 15,
+      "direction": "UP_LEFT",
+      "type": "r"
+    },
+    {
+      "positionX": 19,
+      "positionY": 19,
+      "direction": "RIGHT",
+      "type": "y"
+    }
+  ],
+  "bonuses": [
+    {
+      "positionX": 17,
+      "positionY": 6,
+      "bonus": {
+        "time": 5,
+        "spawnDelay": 15,
+        "type": "stop-b"
+      }
+    },
+    {
+      "positionX": 12,
+      "positionY": 14,
+      "bonus": {
+        "time": 10,
+        "spawnDelay": 10,
+        "type": "slow-b"
+      }
+    },
+    {
+      "positionX": 13,
+      "positionY": 7,
+      "bonus": {
+        "time": 15,
+        "spawnDelay": 25,
+        "type": "kill-b"
+      }
+    },
+    {
+      "positionX": 3,
+      "positionY": 17,
+      "bonus": {
+        "time": 15,
+        "spawnDelay": 20,
+        "type": "speed-b"
+      }
+    }
+  ]
+}

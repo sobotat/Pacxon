@@ -24,16 +24,14 @@ public class DrawingThread extends AnimationTimer {
 		this.gc = canvas.getGraphicsContext2D();
 		this.game = game;
 
-		scene.setOnKeyPressed(keyEvent -> keyboardHandler(keyEvent));
-		scene.setOnKeyReleased(keyEvent -> keyboardHandler(keyEvent));
+		scene.setOnKeyPressed(this::keyboardHandler);
+		scene.setOnKeyReleased(this::keyboardHandler);
 	}
 
 	@Override
 	public void handle(long now) {
 		if(lastTime > 0){
 			double deltaTime = (now - lastTime) / 1e9;
-			//game.simulate(deltaTime);
-
 			game.update(deltaTime);
 		}
 
@@ -47,11 +45,6 @@ public class DrawingThread extends AnimationTimer {
 		String type = keyEvent.getEventType().getName();
 		KeyCode keyCode = keyEvent.getCode();
 
-		if(inputListener == null){
-			logger.error("\033[1;31mInput Listener is NULL\033[0m");
-			return;
-		}
-
 		switch (keyEvent.getCode()){
 			case LEFT -> keyCode = KeyCode.A;
 			case RIGHT -> keyCode = KeyCode.D;
@@ -59,9 +52,14 @@ public class DrawingThread extends AnimationTimer {
 			case DOWN -> keyCode = KeyCode.S;
 		}
 
-		if(keyCode == KeyCode.W || keyCode == KeyCode.S || keyCode == KeyCode.A || keyCode == KeyCode.D)
+		if(keyCode == KeyCode.W || keyCode == KeyCode.S || keyCode == KeyCode.A || keyCode == KeyCode.D) {
+			if (inputListener == null) {
+				logger.error("\033[1;31mInput Listener is NULL\033[0m");
+				return;
+			}
+
 			inputListener.keyPressed(type, keyCode);
-		else if(keyCode == KeyCode.L && type.equals(KeyEvent.KEY_RELEASED.toString())){
+		} else if(keyCode == KeyCode.L && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			logger.info("Changing to \033[1;36mNext Level\033[0m");
 			game.nextLevel();
 		}else if (keyCode == KeyCode.R && type.equals(KeyEvent.KEY_RELEASED.toString())){

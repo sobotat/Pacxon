@@ -33,7 +33,7 @@
                               <Insets left="-25.0" right="5.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Game" textAlignment="CENTER">
+                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="%start_game" textAlignment="CENTER">
                            <font>
                               <Font name="Agency FB Bold" size="28.0" />
                            </font>
@@ -50,7 +50,7 @@
                               <Insets left="-25.0" right="5.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Exit" textAlignment="CENTER">
+                        <Text fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="%quit" textAlignment="CENTER">
                            <font>
                               <Font name="Agency FB Bold" size="28.0" />
                            </font>

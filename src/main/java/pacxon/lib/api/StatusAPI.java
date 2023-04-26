@@ -1,30 +1,26 @@
-package pacxon.lib.api.entity;
+package pacxon.lib.api;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jakarta.rs.json.JacksonXmlBindJsonProvider;
-import lombok.*;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import pacxon.lib.api.LevelClient;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class LevelEntity {
+@Path("/api")
+public interface StatusAPI {
 
-    private String id;
-    MapEntity map;
-    PlayerEntity player;
-    List<NPCEntity> npcs;
-    List<MapBonusEntity> bonuses;
+    @GET
+    @Path("/status")
+    @Produces(MediaType.TEXT_PLAIN)
+    boolean getStatus();
 
-    public static LevelClient getClient() {
-        return JAXRSClientFactory.create("http://localhost:8080", LevelClient.class,
+    static StatusAPI getClient() {
+        return JAXRSClientFactory.create("http://localhost:8080", StatusAPI.class,
                 Collections.singletonList(new JacksonXmlBindJsonProvider().disable(SerializationFeature.WRAP_ROOT_VALUE)
                         .disable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)),
                 new HashMap<>(), true);

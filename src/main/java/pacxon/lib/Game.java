@@ -2,31 +2,35 @@ package pacxon.lib;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import pacxon.App;
 import pacxon.lib.api.Files;
 import pacxon.lib.listeners.GameChangeListener;
 import pacxon.lib.listeners.HUDListener;
 import pacxon.lib.listeners.InputListener;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Log4j2
 public class Game {
-    private static final Logger logger = LogManager.getLogger(Game.class.getName());
 
     private LinkedList<Level> levels;
-    protected final GameChangeListener gameChangeListener;
-    protected final HUDListener hudListener;
+    @Getter protected final GameChangeListener gameChangeListener;
+    @Getter protected final HUDListener hudListener;
     private int currentLevel = 0;
     private final int numberOfMaps;
     private int lives = 3;
 
-    private boolean gameRunning;
+    @Getter private boolean gameRunning;
+    private LocalDateTime gameStartTime;
 
-    private boolean debug;
-    private boolean godMode;
+    @Getter private boolean debug;
+    @Getter private boolean godMode;
 
     int blockSize = 20;
 
@@ -34,14 +38,13 @@ public class Game {
         this.debug = debug;
         this.numberOfMaps = numberOfMaps;
         this.hudListener = hudListener;
+        hudListener.livesChanged(lives);
 
         setBaseFilesFolder(filesLocation);
 
         gameChangeListener = new GameChangeListener() {
             @Override
             public void levelWon() {
-                logger.info("Percent " + levels.get(currentLevel).percentFilledOfMap());
-
                 hudListener.levelWon();
 
                 Timer timer = new Timer(true);
@@ -55,14 +58,14 @@ public class Game {
 
             @Override
             public void gameOver() {
-                logger.info("\033[1;31mGame Over\033[0m");
+                log.info("\033[1;31m" + App.getLogTextRB().getString("game_over") + "\033[0m");
                 hudListener.gameOver();
                 gameRunning = false;
             }
 
             @Override
             public void restartGame() {
-                logger.info("\n\n\n\033[1;38mRestarting Game\033[0m");
+                log.info("\n\n\n\033[1;38m"+ App.getLogTextRB().getString("restarting_game") +"\033[0m");
                 gameRunning = false;
                 currentLevel = 0;
                 setUpGame(numberOfMaps);
@@ -71,6 +74,7 @@ public class Game {
     }
 
     public void setUpGame(int numberOfMaps){
+        gameStartTime = LocalDateTime.now();
         levels = new LinkedList<>();
 
         Wall.loadTextures();
@@ -78,7 +82,7 @@ public class Game {
             String fileName = String.format("level%02d", i);
             Level level = new Level(fileName, this);
 
-            if(!level.getIsInvalid())
+            if(!level.isInvalidLevel())
                 levels.add(level);
         }
 
@@ -116,9 +120,9 @@ public class Game {
 
         if(gameRunning) {
             levels.get(currentLevel).setUpBonuses();
-            logger.info("\033[32mGame Started\033[0m");
+            log.info("\033[32m" + App.getLogTextRB().getString("game_started") + "\033[0m");
         }else {
-            logger.info("\033[31mGame Failed to Start\033[0m");
+            log.info("\033[31m" + App.getLogTextRB().getString("game_failed_to_start") + "\033[0m");
         }
     }
     public void stopGame() {
@@ -132,26 +136,26 @@ public class Game {
             hudListener.levelChanged(currentLevel);
             hudListener.livesChanged(lives);
             hudListener.mapFillPercentageChanged(0);
-            logger.info("Level Won");
+            log.info(App.getLogTextRB().getString("level_won"));
             return;
         }
 
         hudListener.gameWon();
-        logger.info("Game Won");
+        log.info(App.getLogTextRB().getString("game_won") + " - \033[1;36m" + playTime() + "\033[0m");
         gameRunning = false;
     }
 
     // Lives
     public void removeLife(){
         if(godMode){
-            logger.info("\033[1;34mYou was saved by most Powerful Power of God\033[0m");
+            log.info("\033[1;34m" + App.getLogTextRB().getString("god_mode") + "\033[0m");
             return;
         }
 
         lives--;
 
         if (lives > 0)
-            logger.info("Remaining lives \033[1;34m" + lives + "\033[0m");
+            log.info(App.getLogTextRB().getString("remaining_lives") + " \033[1;34m" + lives + "\033[0m");
         else
             gameChangeListener.gameOver();
 
@@ -172,25 +176,32 @@ public class Game {
     public void setBaseFilesFolder(String fileLocation){ Files.setFileLocation(fileLocation);}
 
     // Getters
-    public GameChangeListener getGameChangeListener() {
-        return gameChangeListener;
-    }
-    public boolean isDebug() {
-        return debug;
-    }
-    public boolean isGodMode() {
-        return godMode;
-    }
-    public boolean isGameRunning() {
-        return gameRunning;
-    }
     public InputListener getCurrentInputListener(){
         if(currentLevel >= 0)
             return levels.get(currentLevel).getPlayerInputListener();
         else
             return null;
     }
-    public HUDListener getHudListener() {
-        return hudListener;
+
+    // PlayTime
+    public String playTime(){
+        LocalDateTime now = LocalDateTime.now();
+
+        long gameStartSeconds = gameStartTime.toEpochSecond(ZoneOffset.UTC);
+        long nowSeconds = now.toEpochSecond(ZoneOffset.UTC);
+
+        double playTimeSeconds = nowSeconds - gameStartSeconds;
+
+        // Hours
+        long hour = (long)(playTimeSeconds / (double)(24 * 60));
+        playTimeSeconds -= hour * (24 * 60);
+
+        // Hours
+        long minutes = (long)(playTimeSeconds / (double)(60));
+        playTimeSeconds -= minutes * (60);
+
+        long seconds = (long) playTimeSeconds;
+
+        return String.format("%02dh %02dm %02ds", hour, minutes, seconds);
     }
 }

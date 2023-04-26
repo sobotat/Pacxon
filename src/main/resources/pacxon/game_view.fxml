@@ -31,7 +31,7 @@
                   </Text>
                </center>
                <right>
-                  <Text fx:id="tv_Lives" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="Lives 3" textAlignment="RIGHT" wrappingWidth="90.0" BorderPane.alignment="CENTER">
+                  <Text fx:id="tv_Lives" fill="#edb41b" strokeType="OUTSIDE" strokeWidth="0.0" text="%lives" textAlignment="RIGHT" wrappingWidth="90.0" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="Agency FB Bold" size="27.0" />
                      </font>

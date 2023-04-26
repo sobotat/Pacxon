@@ -3,16 +3,16 @@ package pacxon.lib.entities;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
+import pacxon.App;
 import pacxon.lib.api.Files;
 import pacxon.lib.Collisionable;
 import pacxon.lib.Level;
 
 import java.util.ArrayList;
 
+@Log4j2
 public class NPC extends Entity{
-    private static final Logger logger = LogManager.getLogger(NPC.class.getName());
 
     protected String type;
     protected Level.LevelPoint hitTarget;
@@ -107,7 +107,7 @@ public class NPC extends Entity{
     public void draw(GraphicsContext gc, int blockSize, int currentAnimation, boolean debug){
         if(alive) {
             int animationId;
-            if (!level.getNPCanBeKilled())
+            if (!level.isNpcCanBeKilled())
                 animationId = currentDirection != Direction.STOP ? currentDirection.animationId * 2 : 0;
             else
                 animationId = 8;
@@ -162,8 +162,8 @@ public class NPC extends Entity{
 
     @Override
     public void hitBy(Collisionable obj) {
-        if(obj instanceof Player && level.getNPCanBeKilled() && alive){
-            logger.info("Player have killed \033[1;31mNPC\033[0m");
+        if(obj instanceof Player && level.isNpcCanBeKilled() && alive){
+            log.info(App.getLogTextRB().getString("player_have_killed") + " \033[1;31mNPC\033[0m");
             kill();
         }
     }

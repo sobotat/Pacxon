@@ -5,8 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import pacxon.App;
 import pacxon.lib.api.Files;
 import pacxon.lib.Collisionable;
 import pacxon.lib.Level;
@@ -14,10 +15,10 @@ import pacxon.lib.listeners.InputListener;
 
 import java.util.ArrayList;
 
+@Log4j2
 public class Player extends Entity{
-    private static final Logger logger = LogManager.getLogger(Player.class.getName());
 
-    protected InputListener inputListener;
+    @Getter protected InputListener inputListener;
     protected Direction wantedDirection = Direction.STOP;
     private boolean creatingRoute = false;
     public ArrayList<Point2D> route = new ArrayList<>();
@@ -118,10 +119,10 @@ public class Player extends Entity{
     @Override
     public void hitBy(Collisionable obj) {
         if(!obj.equals(this)){
-            if(level.getNPCanBeKilled())
+            if(level.isNpcCanBeKilled())
                 return;
 
-            logger.info("Player was \033[1;31mHit\033[0m");
+            log.info(App.getLogTextRB().getString("player_was") + "\033[1;31m" + App.getLogTextRB().getString("killed") + "\033[0m");
 
             level.getGame().removeLife();
 
@@ -135,10 +136,5 @@ public class Player extends Entity{
             }
             route.clear();
         }
-    }
-
-    // Getters
-    public InputListener getInputListener() {
-        return inputListener;
     }
 }
