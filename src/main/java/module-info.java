@@ -1,16 +1,27 @@
-module pacxon {
+module pacxon.game {
     requires transitive javafx.controls;
     requires javafx.fxml;
     requires javafx.base;
+
     requires org.json;
     requires com.google.gson;
 
-    opens pacxon to javafx.fxml;
-    exports pacxon;
-    exports pacxon.entities;
-    opens pacxon.entities to javafx.fxml;
+    requires org.apache.logging.log4j;
+    //requires aparapi;
+    requires lombok;
+    requires jakarta.ws.rs;
+    requires org.apache.cxf.rs.client;
+    requires com.fasterxml.jackson.jakarta.rs.base;
+    requires com.fasterxml.jackson.jakarta.rs.json;
+    requires com.fasterxml.jackson.databind;
+    requires jakarta.xml.bind;
+
+    opens pacxon to javafx.fxml, javafx.graphics;
+    opens pacxon.lib to javafx.fxml, javafx.graphics;
+    opens pacxon.controllers to javafx.fxml, javafx.graphics;
+    exports pacxon.lib;
     exports pacxon.controllers;
-    opens pacxon.controllers to javafx.fxml;
-    exports pacxon.listeners;
-    opens pacxon.listeners to javafx.fxml;
+    exports pacxon.lib.api.entity;
+    opens pacxon.lib.api.entity to javafx.fxml, javafx.graphics;
+
 }

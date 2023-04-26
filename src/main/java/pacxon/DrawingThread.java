@@ -6,9 +6,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import pacxon.listeners.InputListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pacxon.lib.Game;
+import pacxon.lib.listeners.InputListener;
 
 public class DrawingThread extends AnimationTimer {
+	private static final Logger logger = LogManager.getLogger(DrawingThread.class.getName());
 
 	private final GraphicsContext gc;
 
@@ -43,6 +47,11 @@ public class DrawingThread extends AnimationTimer {
 		String type = keyEvent.getEventType().getName();
 		KeyCode keyCode = keyEvent.getCode();
 
+		if(inputListener == null){
+			logger.error("\033[1;31mInput Listener is NULL\033[0m");
+			return;
+		}
+
 		switch (keyEvent.getCode()){
 			case LEFT -> keyCode = KeyCode.A;
 			case RIGHT -> keyCode = KeyCode.D;
@@ -53,10 +62,10 @@ public class DrawingThread extends AnimationTimer {
 		if(keyCode == KeyCode.W || keyCode == KeyCode.S || keyCode == KeyCode.A || keyCode == KeyCode.D)
 			inputListener.keyPressed(type, keyCode);
 		else if(keyCode == KeyCode.L && type.equals(KeyEvent.KEY_RELEASED.toString())){
-			System.out.println("Changing to \033[1;36mNext Level\033[0m");
+			logger.info("Changing to \033[1;36mNext Level\033[0m");
 			game.nextLevel();
 		}else if (keyCode == KeyCode.R && type.equals(KeyEvent.KEY_RELEASED.toString())){
-			game.gameChangeListener.restartGame();
+			game.getGameChangeListener().restartGame();
 
 			game.resetLife();
 			game.startGame();
@@ -65,10 +74,10 @@ public class DrawingThread extends AnimationTimer {
 			App.switchToStartMenu();
 		}else if (keyCode == KeyCode.V && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			game.setDebug(!game.isDebug());
-			System.out.println((game.isDebug() ? "\033[1;32mDebugView Activated\033[0m" : "\033[1;31mDebugView Deactivated\033[0m"));
+			logger.info((game.isDebug() ? "\033[1;32mDebugView Activated\033[0m" : "\033[1;31mDebugView Deactivated\033[0m"));
 		}else if (keyCode == KeyCode.G && type.equals(KeyEvent.KEY_RELEASED.toString())){
 			game.setGodMode(!game.isGodMode());
-			System.out.println((game.isGodMode() ? "\033[1;32mGodMode Activated\033[0m" : "\033[1;31mGodMode Deactivated\033[0m"));
+			logger.info((game.isGodMode() ? "\033[1;32mGodMode Activated\033[0m" : "\033[1;31mGodMode Deactivated\033[0m"));
 		}
 	}
 }

@@ -2,20 +2,17 @@ package pacxon.controllers;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.text.Text;
 import pacxon.DrawingThread;
-import pacxon.Game;
-import pacxon.listeners.HUDListener;
-
-import java.util.LinkedList;
+import pacxon.lib.Game;
+import pacxon.lib.listeners.HUDListener;
 
 public class GameViewController {
 
-    private AnimationTimer timer;
-    private HUDListener hudListener;
+    AnimationTimer timer;
+    HUDListener hudListener;
     Game game;
     @FXML
     Canvas canvas_Game;
@@ -50,7 +47,7 @@ public class GameViewController {
             }
         };
 
-        game = new Game(3, hudListener,false);
+        game = new Game(1, hudListener,false, "src/main/resources/pacxon/");
         timer = new DrawingThread(canvas_Game, scene, game);
         timer.start();
     }

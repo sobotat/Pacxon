@@ -8,17 +8,25 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pacxon.controllers.GameViewController;
 import pacxon.controllers.StartMenuController;
+import pacxon.lib.api.entity.LevelEntity;
+import pacxon.lib.api.entity.MapEntity;
 
+import java.util.List;
 import java.util.Objects;
 
+@Log4j2
 public class App extends Application {
+	private static final Logger logger = LogManager.getLogger(App.class.getName());
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	private Canvas canvas;
 	private static Stage stage;
 
@@ -27,7 +35,7 @@ public class App extends Application {
 	private static GameViewController gameViewController;
 	private static Stage primaryStage;
 	private static Scene startMenuScene, gameViewScene, winViewScene, scoreViewScene;
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -65,7 +73,7 @@ public class App extends Application {
 	}
 
 	public static void switchToGame(){
-		System.out.println("Switching to \033[1;38mGame View\033[0m");
+		logger.info("Switching to \033[1;38mGame View\033[0m");
 		if(primaryStage == null || gameViewScene == null)
 			return;
 
@@ -74,7 +82,7 @@ public class App extends Application {
 	}
 
 	public static void switchToStartMenu(){
-		System.out.println("Switching to \033[1;38mStart Menu\033[0m");
+		logger.info("Switching to \033[1;38mStart Menu\033[0m");
 		if(primaryStage == null || startMenuScene == null)
 			return;
 
@@ -102,12 +110,15 @@ public class App extends Application {
 	public static App getApp() {
 		return app;
 	}
+
 	public static StartMenuController getStartMenuController() {
 		return startMenuController;
 	}
+
 	public static GameViewController getGameViewController() {
 		return gameViewController;
 	}
+
 	public static Stage getPrimaryStage() {
 		return primaryStage;
 	}
