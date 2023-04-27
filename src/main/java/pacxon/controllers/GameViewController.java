@@ -36,15 +36,15 @@ public class GameViewController {
             }
             @Override
             public void levelWon() {
-                tv_Level.setText("Level Won");
+                tv_Level.setText(App.getGameViewRB().getString("level_won"));
             }
             @Override
             public void gameWon() {
-                tv_Level.setText("Game Won");
+                tv_Level.setText(App.getGameViewRB().getString("game_won"));
             }
             @Override
             public void gameOver() {
-                tv_Level.setText("Game Over");
+                tv_Level.setText(App.getGameViewRB().getString("game_over"));
             }
             @Override
             public void livesChanged(int lives) {

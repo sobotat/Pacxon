@@ -100,7 +100,7 @@ public class App extends Application {
 	}
 
 	public static void switchToGame(){
-		log.info(App.logTextRB.getString("switching_to") + " \033[1;38mGame View\033[0m");
+		log.info(App.logTextRB.getString("switching_to") + " Game View");
 		if(primaryStage == null || gameViewScene == null)
 			return;
 
@@ -109,7 +109,7 @@ public class App extends Application {
 	}
 
 	public static void switchToStartMenu(){
-		log.info(App.logTextRB.getString("switching_to") + " \033[1;38mStart Menu\033[0m");
+		log.info(App.logTextRB.getString("switching_to") + " Start Menu");
 		if(primaryStage == null || startMenuScene == null)
 			return;
 
@@ -128,7 +128,7 @@ public class App extends Application {
 	}
 
 	public void exitProgram(WindowEvent evt) {
-		log.info("\033[1;38m" + App.logTextRB.getString("exiting_game") + "\033[0m");
+		log.info(App.logTextRB.getString("exiting_game"));
 		gameViewController.stopGame();
 		System.exit(0);
 	}

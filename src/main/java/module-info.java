@@ -1,4 +1,4 @@
-module pacxon.game {
+module pacxon {
     requires transitive javafx.controls;
     requires javafx.fxml;
     requires javafx.base;
@@ -7,7 +7,6 @@ module pacxon.game {
     requires com.google.gson;
 
     requires org.apache.logging.log4j;
-    //requires aparapi;
     requires lombok;
     requires jakarta.ws.rs;
     requires org.apache.cxf.rs.client;
@@ -22,6 +21,7 @@ module pacxon.game {
     exports pacxon.lib;
     exports pacxon.controllers;
     exports pacxon.lib.api.entity;
+    exports pacxon.lib.api;
     opens pacxon.lib.api.entity to javafx.fxml, javafx.graphics;
 
 }

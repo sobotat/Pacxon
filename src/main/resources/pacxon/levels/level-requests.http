@@ -36,8 +36,8 @@ Content-Type: application/json
     },
     {
       "positionX": 18,
-      "positionY": 18,
-      "direction": "UP",
+      "positionY": 19,
+      "direction": "RIGHT",
       "type": "y"
     }
   ],
@@ -75,6 +75,7 @@ Content-Type: application/json
       "bonus": {
         "time": 15,
         "spawnDelay": 20,
+        "speed": 10,
         "type": "speed-b"
       }
     }
@@ -127,9 +128,9 @@ Content-Type: application/json
       "type": "r"
     },
     {
-      "positionX": 19,
-      "positionY": 19,
-      "direction": "RIGHT",
+      "positionX": 24,
+      "positionY": 15,
+      "direction": "UP",
       "type": "y"
     }
   ],
@@ -167,6 +168,7 @@ Content-Type: application/json
       "bonus": {
         "time": 15,
         "spawnDelay": 20,
+        "speed": 12,
         "type": "speed-b"
       }
     }
